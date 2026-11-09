@@ -1,0 +1,881 @@
+<title>Halay Ekonomisi Sunumu</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: one slide per screen, a night village square. Slides change sideways; the bottom bar is the stage manager. Single dark look by design. */
+:root{
+  --night:#0E1424;      /* sky, slide ground */
+  --square:#161E33;     /* meydan ground, cards */
+  --line:#26314D;       /* rules */
+  --lamp:#F4C152;       /* string lights, accent */
+  --kirmizi:#E5484D;    /* gift, live, video */
+  --fog:#AEB8D0;        /* secondary text */
+  --dim:#7C88A6;        /* tertiary text */
+  --ink:#F3F5FB;        /* primary text */
+  --blue:#4C7DF0; --green:#2FBF7A; --teal:#2EC4D0; --purple:#9C6BFF;
+  --shade:rgba(5,7,13,.62);
+  --display:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --body:"Figtree","Helvetica Neue","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --navh:58px;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{background:var(--night);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;overflow:hidden}
+a{color:var(--lamp)}
+:focus-visible{outline:2px solid var(--lamp);outline-offset:2px;border-radius:4px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0}
+p{margin:0}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--lamp)}
+.muted{color:var(--fog)}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.note{font-size:12px;color:var(--dim)}
+
+/* deck */
+.deck{position:relative;height:100%;overflow:hidden}
+.slide{position:absolute;inset:0 0 var(--navh) 0;overflow-y:auto;overflow-x:hidden;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px;
+  visibility:hidden;opacity:0;transform:translateX(calc(var(--dir,1) * 48px));transition:opacity .45s ease,transform .55s cubic-bezier(.2,.7,.2,1),visibility 0s .55s}
+.slide.on{visibility:visible;opacity:1;transform:none;transition:opacity .45s ease,transform .55s cubic-bezier(.2,.7,.2,1),visibility 0s}
+.slide.past{--dir:-1}
+.in{max-width:1200px;margin:0 auto;min-height:100%;display:grid;align-content:center;gap:24px}
+.slide.on .rv{animation:rise .6s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0) * 80ms + 120ms)}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}}
+.head{display:grid;gap:10px;max-width:68ch}
+.head h2{font-size:clamp(28px,4.2vw,52px);font-weight:800;line-height:1.04;letter-spacing:-.01em}
+.head h2 em{font-style:normal;color:var(--lamp)}
+.head p{font-size:clamp(15px,1.5vw,18px);color:var(--fog);max-width:60ch}
+.slide-no{position:absolute;top:22px;right:max(16px,env(safe-area-inset-right,0px));font:500 11px var(--mono);color:var(--dim);letter-spacing:.1em}
+
+/* bottom bar */
+.bar{position:absolute;left:0;right:0;bottom:0;height:var(--navh);display:flex;align-items:center;gap:8px;
+  padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px));
+  background:var(--night);border-top:1px solid var(--line);z-index:5}
+.progress{position:absolute;left:0;top:-1px;height:2px;background:var(--lamp);transition:width .4s ease}
+.nb{appearance:none;border:1px solid var(--line);background:var(--square);color:var(--ink);font:600 13px var(--body);height:38px;min-width:38px;padding:0 12px;border-radius:10px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.nb:hover{border-color:var(--lamp)}
+.nb[aria-pressed=true]{background:var(--lamp);color:#1A1406;border-color:var(--lamp)}
+.where{flex:1;min-width:0;display:flex;align-items:baseline;gap:10px;justify-content:center}
+.where .num{color:var(--lamp);font-size:13px}
+.where span:last-child{font-size:13px;color:var(--fog);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kbd{font:500 11px var(--mono);color:var(--dim)}
+
+/* notes + overview + lightbox */
+.notes{position:absolute;left:max(16px,env(safe-area-inset-left,0px));right:max(16px,env(safe-area-inset-right,0px));bottom:calc(var(--navh) + 12px);max-width:720px;margin:0 auto;
+  background:var(--square);border:1px solid var(--line);border-radius:14px;padding:14px 16px;font-size:15px;z-index:6;box-shadow:0 20px 60px -20px #000}
+.notes b{display:block;font:500 11px var(--mono);letter-spacing:.1em;color:var(--lamp);text-transform:uppercase;margin-bottom:4px}
+.overview{position:absolute;inset:0 0 var(--navh) 0;background:var(--night);z-index:7;overflow-y:auto;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px}
+.ov-grid{max-width:1200px;margin:16px auto 0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.ov-grid button{appearance:none;text-align:left;border:1px solid var(--line);background:var(--square);color:var(--ink);border-radius:14px;padding:14px;cursor:pointer;display:grid;gap:6px;min-height:92px;align-content:start;font:600 15px/1.25 var(--body)}
+.ov-grid button:hover{border-color:var(--lamp)}
+.ov-grid button[aria-current=true]{border-color:var(--lamp);background:rgba(244,193,82,.1)}
+.ov-grid .num{font-size:11px;color:var(--lamp)}
+.lb{position:fixed;inset:0;z-index:20;background:var(--shade);backdrop-filter:blur(6px);display:grid;place-items:center;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px}
+.lb-box{width:min(960px,100%);display:grid;gap:12px}
+.lb-box img{width:100%;max-width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:14px;background:var(--square);display:block}
+.lb-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.lb-row .t{flex:1;min-width:0;font-weight:600}
+.lb-row .t small{display:block;color:var(--fog);font:500 12px var(--mono)}
+
+/* chips & buttons in sims */
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{appearance:none;border:0;border-radius:99px;padding:8px 13px;font:700 12px var(--body);cursor:pointer;color:#fff}
+.chip:active{transform:scale(.95)}
+.chip.ghost{background:var(--square);border:1px solid var(--line)}
+
+/* 1 cover */
+.cover{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:56px;align-items:center}
+.cover h1{font-size:clamp(42px,6.6vw,96px);font-weight:800;line-height:.95;letter-spacing:-.02em}
+.cover h1 em{font-style:normal;color:var(--lamp)}
+.cover .lead{font-size:clamp(16px,1.7vw,21px);color:var(--fog);max-width:44ch;margin-top:20px}
+.prepared{margin-top:28px;display:flex;flex-wrap:wrap;gap:8px 18px;align-items:baseline;font-size:14px;color:var(--fog)}
+.prepared .to{font-family:var(--display);font-weight:700;font-size:20px;color:var(--ink);border-bottom:1px dashed var(--line);padding:0 2px;min-width:6ch;outline-offset:4px}
+.prepared .to:empty::before{content:attr(data-ph);color:var(--dim)}
+.start-hint{margin-top:18px}
+.phone{position:relative;width:min(300px,72vw);aspect-ratio:9/16;max-width:100%;border-radius:38px;background:#05070D;padding:10px;box-shadow:0 30px 90px -30px rgba(244,193,82,.4)}
+.phone.sm{width:min(250px,62vw)}
+.screen{position:relative;width:100%;height:100%;border-radius:30px;overflow:hidden;background:var(--night)}
+.screen canvas{position:absolute;inset:0;width:100%;height:100%}
+.live-top{position:absolute;top:14px;left:14px;right:14px;display:flex;gap:8px;align-items:center;font-size:11px;font-weight:600}
+.pill{background:var(--kirmizi);color:#fff;padding:2px 8px;border-radius:99px;font-weight:700;letter-spacing:.04em}
+.viewers{color:var(--fog)}
+.banner{position:absolute;left:12px;right:12px;top:52%;background:var(--kirmizi);color:#fff;font-weight:700;font-size:12px;padding:7px 10px;border-radius:10px;transform:translateY(8px);opacity:0;transition:.25s}
+.banner.show{opacity:1;transform:none}
+.feed{position:absolute;left:12px;right:40%;bottom:14px;display:flex;flex-direction:column;gap:4px;font-size:11px}
+.feed div{background:rgba(0,0,0,.4);padding:3px 8px;border-radius:9px;width:max-content;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;animation:pop .25s}
+.feed b{color:var(--lamp);margin-right:5px}
+@keyframes pop{from{transform:translateY(6px);opacity:0}}
+
+/* 2 market */
+.market{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:40px;align-items:center}
+.bigs{display:grid;gap:22px}
+.big b{display:block;font-family:var(--display);font-weight:800;font-size:clamp(40px,5.4vw,72px);line-height:1;color:var(--lamp);letter-spacing:-.02em}
+.big span{display:block;color:var(--ink);font-size:16px;margin-top:6px;max-width:40ch}
+.big small{display:block;font:500 11px var(--mono);color:var(--dim);margin-top:4px}
+.bars{background:var(--square);border-radius:20px;padding:24px;display:grid;gap:18px}
+.bars h3{font-size:18px}
+.brow{display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;align-items:center}
+.brow .yr{font:700 13px var(--mono);color:var(--fog)}
+.track{position:relative;height:46px;border-radius:10px;background:var(--night);overflow:hidden}
+.fill{position:absolute;inset:0 auto 0 0;border-radius:10px;background:var(--lamp);display:flex;align-items:center;justify-content:flex-end;padding-right:12px;font:800 16px var(--display);color:#1A1406;transform-origin:left;transition:transform 1s cubic-bezier(.2,.7,.2,1)}
+.fill.est{background:repeating-linear-gradient(135deg,var(--lamp) 0 10px,#E2AE3E 10px 20px)}
+.slide:not(.on) .fill{transform:scaleX(.05)}
+.axis{display:flex;justify-content:space-between;font:500 11px var(--mono);color:var(--dim);padding-left:56px}
+
+/* 3 why you */
+.vs{width:100%;border-collapse:collapse;font-size:15px;min-width:600px}
+.vs th{font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--fog);text-align:left;padding:10px 14px 10px 0;border-bottom:1px solid var(--line)}
+.vs th:last-child{color:var(--lamp)}
+.vs td{padding:13px 14px 13px 0;border-bottom:1px solid var(--line);vertical-align:top}
+.vs td:first-child{font-weight:700;width:18%}
+.vs td:nth-child(2){color:var(--fog)}
+.vs td:last-child{color:var(--ink)}
+.tablebox{overflow-x:auto}
+.assets{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.assets div{border-top:2px solid var(--lamp);padding-top:10px;display:grid;gap:3px}
+.assets b{font-family:var(--display);font-size:18px}
+.assets span{font-size:14px;color:var(--fog)}
+
+/* 4 how */
+.flow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;padding:0;margin:0;counter-reset:f}
+.flow li{list-style:none;background:var(--square);border-radius:18px;padding:18px;display:grid;gap:8px;align-content:start}
+.flow li::before{counter-increment:f;content:counter(f);font:800 28px/1 var(--display);color:var(--lamp)}
+.flow li b{font-size:16px}
+.flow li span{font-size:14px;color:var(--fog)}
+.money{background:linear-gradient(135deg,rgba(244,193,82,.14),rgba(244,193,82,.03));border:1px solid rgba(244,193,82,.35);border-radius:18px;padding:18px 20px;display:grid;gap:10px}
+.coinrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:14px}
+.coinrow .tok{background:var(--night);border:1px solid var(--line);border-radius:10px;padding:7px 11px;font-weight:600}
+.coinrow .tok.us{border-color:var(--lamp);color:var(--lamp)}
+.coinrow .arr{color:var(--lamp);font-weight:800}
+
+/* 5 demo */
+.demo{display:grid;grid-template-columns:auto minmax(0,1fr);gap:40px;align-items:center}
+.controls{display:grid;gap:8px;max-width:420px}
+.controls .label{font-family:var(--mono);font-size:11px;color:var(--fog);letter-spacing:.08em;text-transform:uppercase}
+.btn{appearance:none;border:1px solid var(--line);background:var(--square);color:var(--ink);font:600 14px/1.2 var(--body);padding:11px 13px;border-radius:12px;text-align:left;cursor:pointer;display:flex;justify-content:space-between;gap:10px;align-items:center;transition:transform .08s,border-color .15s}
+.btn:hover{border-color:var(--lamp)}
+.btn:active{transform:scale(.97)}
+.btn .c{font-family:var(--mono);font-size:11px;color:var(--lamp)}
+.btn.gift{border-color:rgba(229,72,77,.5)}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.meter{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:6px}
+.meter div{background:var(--square);border-radius:12px;padding:10px}
+.meter b{display:block;font-family:var(--mono);font-size:17px}
+.meter span{font-size:11px;color:var(--fog)}
+.toggle{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--fog);cursor:pointer}
+
+/* format slides: sim + video */
+.fmt-grid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.25fr);gap:28px;align-items:start}
+.sim{background:var(--square);border-radius:20px;padding:16px;display:grid;gap:12px;align-content:start;min-width:0}
+.sim canvas{width:100%;max-width:100%;aspect-ratio:4/3;border-radius:14px;background:var(--night);display:block}
+.sim.phoney{grid-template-columns:auto minmax(0,1fr);align-items:center}
+.side{display:flex;align-items:center;gap:8px}
+.side .dot{width:8px;height:8px;border-radius:50%;background:var(--lamp)}
+.side.real .dot{background:var(--kirmizi)}
+.col{display:grid;gap:12px;min-width:0;align-content:start}
+.vids{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.vids.one{grid-template-columns:minmax(0,1fr)}
+.vcard{margin:0;background:var(--square);border-radius:18px;overflow:hidden;display:grid;align-content:start;min-width:0;border:1px solid transparent;transition:border-color .15s}
+.vcard:hover{border-color:rgba(229,72,77,.6)}
+.vthumb{position:relative;display:block;aspect-ratio:16/9;max-width:100%;overflow:hidden;background:var(--night)}
+.vthumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s}
+.vthumb:hover img{transform:scale(1.04)}
+.vsrc{position:absolute;top:10px;left:10px;font:700 10.5px var(--mono);letter-spacing:.06em;background:var(--shade);padding:3px 8px;border-radius:6px;color:var(--ink)}
+.play{position:absolute;left:50%;top:50%;width:58px;height:40px;margin:-20px 0 0 -29px;background:var(--kirmizi);border-radius:12px;transition:transform .15s;box-shadow:0 6px 20px -6px #000}
+.play::after{content:"";position:absolute;left:23px;top:12px;border-left:15px solid #fff;border-top:8px solid transparent;border-bottom:8px solid transparent}
+.vthumb:hover .play{transform:scale(1.1)}
+.frames{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;padding:4px 4px 0}
+.frame{appearance:none;border:0;padding:0;background:var(--night);position:relative;aspect-ratio:16/9;max-width:100%;border-radius:6px;overflow:hidden;cursor:zoom-in}
+.frame img{width:100%;height:100%;object-fit:cover;display:block;opacity:.85;transition:opacity .15s}
+.frame:hover img{opacity:1}
+.frame span{position:absolute;right:4px;bottom:3px;font:700 9.5px var(--mono);background:var(--shade);color:var(--ink);padding:1px 5px;border-radius:4px}
+.vcard figcaption{padding:12px 14px 14px;display:grid;gap:3px}
+.vcard figcaption b{font-size:15px;line-height:1.3}
+.vcard figcaption small{color:var(--fog);font-size:12px}
+.vcard figcaption p{font-size:13.5px;color:var(--fog);margin:3px 0 4px}
+.vcard .go{color:var(--kirmizi);font-weight:700;font-size:13px;text-decoration:none}
+.vcard .go:hover{text-decoration:underline}
+.vids:not(.one) .vcard figcaption p{display:none}
+.why{display:grid;gap:6px;font-size:14px;color:var(--fog)}
+.why b{color:var(--ink)}
+
+/* 10 phone-first */
+.phonefirst{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:36px;align-items:center}
+.ratio{display:flex;gap:10px;align-items:flex-end}
+.ratio i{display:block;width:44px;border-radius:8px 8px 4px 4px;background:var(--kirmizi)}
+.ratio i.ok{background:var(--line)}
+.ratio-wrap{display:grid;gap:10px}
+.ratio-wrap b{font-family:var(--display);font-size:clamp(36px,4.6vw,60px);line-height:1;color:var(--lamp)}
+
+/* 11 competitors */
+.comp{width:100%;border-collapse:collapse;font-size:15px;min-width:560px}
+.comp th{font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--fog);text-align:left;padding:10px 12px 10px 0;border-bottom:1px solid var(--line)}
+.comp td{padding:11px 12px 11px 0;border-bottom:1px solid var(--line)}
+.comp td:first-child{font-weight:700}
+.tag{font-family:var(--mono);font-size:11px;padding:2px 8px;border-radius:99px;border:1px solid var(--line);color:var(--fog);white-space:nowrap}
+.tag.pc{border-color:rgba(229,72,77,.5);color:#F2A3A6}
+.tag.mob{border-color:rgba(47,191,122,.5);color:#9BE3BF}
+.gaps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.gaps div{border-top:2px solid var(--lamp);padding-top:10px}
+.gaps b{font-family:var(--display);font-size:20px}
+.gaps p{margin-top:4px;color:var(--fog);font-size:14px}
+
+/* 12 calculator */
+.calc{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px;align-items:start}
+.field{display:grid;gap:6px;margin-bottom:14px}
+.field label{display:flex;justify-content:space-between;font-weight:600;font-size:14px}
+.field output{font-family:var(--mono);color:var(--lamp)}
+input[type=range]{width:100%;accent-color:var(--lamp)}
+.help{font-size:12.5px;color:var(--dim)}
+.seg{display:flex;background:var(--square);border-radius:12px;padding:4px;gap:4px}
+.seg button{flex:1;border:0;background:transparent;color:var(--fog);font:600 13px var(--body);padding:9px;border-radius:9px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--lamp);color:#1A1406}
+.result{background:var(--square);border-radius:20px;padding:24px;display:grid;gap:18px;align-content:start}
+.result .bigval{font-family:var(--display);font-size:clamp(38px,5vw,60px);font-weight:800;line-height:1;color:var(--lamp)}
+.result .sub{font:500 14px var(--mono);color:var(--fog);margin-top:6px}
+.rows{display:grid;gap:10px}
+.rows div{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding-bottom:8px;font-size:14px}
+.rows div span:last-child{font-family:var(--mono);text-align:right}
+
+/* 13 partnership */
+.models{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.model{background:var(--square);border-radius:18px;padding:20px;display:grid;gap:10px;align-content:start;border:1px solid transparent}
+.model.pick{border-color:var(--lamp);background:linear-gradient(160deg,rgba(244,193,82,.12),var(--square) 60%)}
+.model h3{font-size:21px}
+.model p{font-size:14px;color:var(--fog)}
+.model ul{margin:0;padding-left:18px;font-size:14px;display:grid;gap:4px}
+.model .tagline{font:500 11px var(--mono);letter-spacing:.08em;color:var(--lamp);text-transform:uppercase}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.split div{border-top:1px solid var(--line);padding-top:12px;display:grid;gap:4px}
+.split b{font-size:15px}
+.split span{font-size:14px;color:var(--fog)}
+
+/* 14 plan */
+.plan{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));position:relative}
+.plan::before{content:"";position:absolute;left:7px;right:20%;top:6px;height:2px;background:var(--line)}
+.step{padding-right:22px;display:grid;gap:6px;align-content:start}
+.step .dot{width:14px;height:14px;border-radius:50%;background:var(--lamp);box-shadow:0 0 0 6px rgba(244,193,82,.15);margin-bottom:10px;position:relative}
+.step:last-child .dot{background:var(--kirmizi);box-shadow:0 0 0 6px rgba(229,72,77,.18)}
+.step h3{font-size:22px}
+.step .gate{font:500 12px var(--mono);color:var(--lamp);border:1px solid rgba(244,193,82,.35);border-radius:10px;padding:8px 10px;margin-top:6px}
+
+/* 15 risks */
+.risklist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:0;margin:0}
+.risklist li{list-style:none;background:var(--square);border-radius:14px;padding:16px 18px;font-size:14.5px;color:var(--fog);display:grid;gap:4px}
+.risklist b{color:var(--ink);font-size:16px}
+.risklist .fix{color:var(--green);font-size:13.5px}
+
+/* 16 close */
+.close{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:44px;align-items:center}
+.close h2{font-size:clamp(36px,5.4vw,72px);font-weight:800;line-height:.98;letter-spacing:-.02em}
+.close h2 em{font-style:normal;color:var(--lamp)}
+.ask{display:grid;gap:10px;padding:0;margin:0}
+.ask li{list-style:none;display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:baseline;background:var(--square);border-radius:14px;padding:14px 16px}
+.ask .num{color:var(--lamp);font-size:13px}
+.ask b{display:block}
+.ask span{color:var(--fog);font-size:14px}
+.sources{columns:2;column-gap:28px;font-size:12px;color:var(--dim);padding:0;margin:0}
+.sources li{list-style:none;break-inside:avoid;margin-bottom:5px}
+.sources a{color:var(--fog);text-decoration:underline;text-decoration-color:var(--line)}
+
+@media (max-width:980px){
+  .cover,.market,.demo,.fmt-grid,.phonefirst,.calc,.close{grid-template-columns:minmax(0,1fr)}
+  .cover .phone{justify-self:center}
+  .demo .phone{justify-self:center}
+  .assets,.flow{grid-template-columns:1fr 1fr}
+  .models,.gaps{grid-template-columns:minmax(0,1fr)}
+  .ov-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .in{align-content:start}
+}
+@media (max-width:640px){
+  .slide{padding-block:20px 28px}
+  .flow,.assets,.risklist,.split{grid-template-columns:minmax(0,1fr)}
+  .vids{grid-template-columns:minmax(0,1fr)}
+  .vids:not(.one) .vcard figcaption p{display:block}
+  .sim.phoney{grid-template-columns:minmax(0,1fr);justify-items:center}
+  .plan{grid-template-columns:minmax(0,1fr);gap:22px}.plan::before{display:none}
+  .meter{grid-template-columns:1fr 1fr}
+  .ov-grid{grid-template-columns:1fr 1fr}
+  .sources{columns:1}
+  .kbd,.nb .lbl{display:none}
+  .where span:last-child{display:none}
+  .slide-no{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="deck" id="deck">
+
+<!-- 1 -->
+<section class="slide" id="kapak" data-title="Kapak" data-notes="Açılış cümlesi: TikTok'ta izleyici artık sadece izlemiyor, ekrandaki oyunu yönetiyor. Sağdaki telefonda gerçek zamanlı çalışan bir canlandırma var; sonraki slaytlarda bunu siz oynatacaksınız.">
+  <div class="in"><div class="cover">
+    <div>
+      <div class="eyebrow rv">TikTok LIVE interaktif oyunlar · Türkiye · Kasım 2026</div>
+      <h1 class="rv" style="--i:1;margin-top:16px">İzleyici izlemiyor, <em>halaya katılıyor.</em></h1>
+      <p class="lead rv" style="--i:2">Canlı yayın ekranında, izleyicinin yorum ve hediyeleriyle oynanan oyunlar Türkiye'de hızla büyüyen yeni bir oyun pazarı. Bu pazarı en hızlı kazanacak ekip, mobil oyun yapmayı zaten bilen ekip.</p>
+      <div class="prepared rv" style="--i:3"><span>Sunulan:</span><span class="to" id="client" contenteditable="true" spellcheck="false" role="textbox" aria-label="Sunulan şirketin adı" data-ph="Stüdyonuzun adı"></span><span class="note">tıkla, şirket adını yaz</span></div>
+      <p class="note start-hint rv" style="--i:4">→ tuşu, kaydırma ya da alttaki oklarla ilerleyin · N konuşmacı notu · O tüm slaytlar</p>
+    </div>
+    <div class="phone rv" style="--i:2" aria-label="Temsili interaktif halay yayını">
+      <div class="screen"><canvas id="halayCover"></canvas>
+        <div class="live-top"><span class="pill">CANLI</span><span class="viewers num" data-viewers>3.104 izliyor</span></div></div>
+    </div>
+  </div></div>
+</section>
+
+<!-- 2 -->
+<section class="slide" id="pazar" data-title="Pazar" data-notes="Kearney'nin TikTok için yaptığı çalışma: Türkiye canlı yayın ekonomisi 2030'a kadar üç katından fazla büyüyor. Haftada 10 milyon kişi izliyor. Tek bir hediyeli yayında 65 bin eş zamanlı izleyici gördük.">
+  <div class="in">
+    <div class="head rv"><div class="eyebrow">Pazar</div><h2>Türkiye canlı yayın ekonomisi <em>2030'a kadar 3 katına</em> çıkıyor</h2></div>
+    <div class="market">
+      <div class="bigs">
+        <div class="big rv" style="--i:1"><b class="num">10,2 M</b><span>kişi Türkiye'de her hafta canlı yayın izliyor</span><small>TikTok / Kearney</small></div>
+        <div class="big rv" style="--i:2"><b class="num">~65 bin</b><span>kişi aynı anda tek bir hediyeli halay yayınını izledi</span><small>Ekim 2026 gözlemi</small></div>
+      </div>
+      <div class="bars rv" style="--i:3" role="img" aria-label="Türkiye canlı yayın ekonomisi: 2024'te 1,6 milyar dolar, 2030'da 5 milyar doların üstü tahmin ediliyor">
+        <h3>Canlı yayından dönen para, milyar $</h3>
+        <div class="brow"><span class="yr">2024</span><div class="track"><div class="fill" style="width:32%">1,6</div></div></div>
+        <div class="brow"><span class="yr">2030</span><div class="track"><div class="fill est" style="width:100%">5+</div></div></div>
+        <div class="axis num"><span>0</span><span>2,5</span><span>5</span></div>
+        <div class="note">2030 değeri tahmin (taralı). Kaynak: TikTok / Kearney, Forbes Türkiye.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 -->
+<section class="slide" id="neden-siz" data-title="Neden mobil oyun stüdyosu?" data-notes="Bu slayt sunumun kalbi. LIVE oyunu teknik olarak bir hyper-casual oyuna çok benziyor; farkı dağıtım ve gelir modelinde. Sizin ekibinizde bu oyunu yapacak her yetenek zaten var.">
+  <div class="in">
+    <div class="head rv"><div class="eyebrow">Neden siz?</div><h2>Aynı yetenek, <em>farklı bir dağıtım kanalı</em></h2>
+      <p>LIVE oyunu teknik olarak kısa oturumlu bir hyper-casual oyun. Değişen şey oyuncunun nereden geldiği ve paranın nasıl aktığı.</p></div>
+    <div class="tablebox rv" style="--i:1"><table class="vs">
+      <thead><tr><th></th><th>Mobil oyun</th><th>TikTok LIVE oyunu</th></tr></thead>
+      <tbody>
+        <tr><td>Müşteri</td><td>Oyuncu, mağazadan indirir</td><td>Yayıncı lisans alır, izleyicileri oynar</td></tr>
+        <tr><td>Oyuncu edinme</td><td>Reklam kampanyası, kurulum başı maliyet</td><td>Yayıncının kendi izleyici kitlesi, edinme maliyeti yok</td></tr>
+        <tr><td>Gelir</td><td>Uygulama içi satın alma, reklam, mağaza payı</td><td>Yayıncıdan aylık lisans; kendi kanalımızda hediye geliri</td></tr>
+        <tr><td>Geliştirme</td><td>Aylar, mağaza onayı</td><td>2–3 hafta, onay yok; web tabanlı, anında güncelleme</td></tr>
+        <tr><td>Başarı ölçüsü</td><td>D1/D7 tutma, ARPDAU</td><td>Saatte hediye, yayın süresi, aynı oyunu tekrar açan yayıncı</td></tr>
+      </tbody></table></div>
+    <div class="assets">
+      <div class="rv" style="--i:2"><b>Prototip hızı</b><span>Haftada bir oyun deneyen bir ekip, LIVE'da haftada bir format dener.</span></div>
+      <div class="rv" style="--i:3"><b>Sanat ve animasyon</b><span>Kalabalık sahneler, karakter, efekt: hediyenin "değdiği" an görsel.</span></div>
+      <div class="rv" style="--i:4"><b>Live-ops kültürü</b><span>Etkinlik, sezon, A/B test. Yayıncıya her hafta yeni tema.</span></div>
+      <div class="rv" style="--i:5"><b>Mevcut IP</b><span>Tanınan karakterler yayında hemen fark edilir, mağazaya geri trafik getirebilir.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 -->
+<section class="slide" id="nasil" data-title="Nasıl çalışır" data-notes="Para akışını netleştir: biz hediyeden pay almıyoruz. TikTok hediyenin yaklaşık yarısını yayıncıya veriyor; bizim gelirimiz yayıncının ödediği lisans. Bu, TikTok'la gelir çatışması olmadığı anlamına geliyor.">
+  <div class="in">
+    <div class="head rv"><div class="eyebrow">Nasıl çalışır</div><h2>Dört adımda bir yayın, <em>bir oyun döngüsü</em></h2></div>
+    <ol class="flow">
+      <li class="rv" style="--i:1"><b>Yayıncı yayın açar</b><span>Telefondan ya da bilgisayardan yayına başlar, ekrana oyunu koyar.</span></li>
+      <li class="rv" style="--i:2"><b>İzleyici katılır</b><span>Yorum yazar, beğenir ya da coin'le gül, aslan gibi sanal hediye gönderir.</span></li>
+      <li class="rv" style="--i:3"><b>Oyun anında tepki verir</b><span>Yorum yazan halaya girer, hediye gönderen horon başı olur. Adı ekranda görünür.</span></li>
+      <li class="rv" style="--i:4"><b>Yayıncı kazanır, oyunu tutar</b><span>Oyun ne kadar eğlenceliyse o kadar hediye gelir; yayıncı lisansı yeniler.</span></li>
+    </ol>
+    <div class="money rv" style="--i:5"><span class="eyebrow">Para nasıl akıyor?</span>
+      <div class="coinrow"><span class="tok">İzleyici ~1 $ öder</span><span class="arr">→</span><span class="tok">100 coin'lik hediye</span><span class="arr">→</span><span class="tok">Yayıncıya ~0,53 $</span><span class="arr">→</span><span class="tok us">Yayıncı bize aylık 20–30 $ lisans</span></div>
+      <p class="muted" style="font-size:14px">Kalan pay TikTok'ta kalır. Biz hediyeden pay almayız; gelirimiz lisans ve kendi test kanallarımızdaki hediyeler.</p></div>
+  </div>
+</section>
+
+<!-- 5 -->
+<section class="slide" id="demo" data-title="Canlı demo" data-notes="Odadakilere butonlara basmalarını söyle. HORON yazınca karakter halaya giriyor, Galaksi gönderince sıkıştır modu başlıyor. Sağ alttaki sayaç hediyelerden yayıncıya kalan gerçek parayı gösteriyor.">
+  <div class="in"><div class="demo">
+    <div class="phone rv" aria-label="Oynanabilir halay yayını canlandırması">
+      <div class="screen"><canvas id="halayDemo"></canvas>
+        <div class="live-top"><span class="pill">CANLI</span><span class="viewers num" data-viewers>3.104 izliyor</span></div>
+        <div class="banner" id="banner"></div>
+        <div class="feed" id="feed" aria-live="polite"></div></div>
+    </div>
+    <div class="col">
+      <div class="head rv" style="--i:1"><div class="eyebrow">Canlı demo</div><h2>Şimdi <em>siz izleyicisiniz</em></h2>
+        <p>Butonlara basın: yorum halaya sokar, beğeni tempoyu artırır, hediye sahneyi değiştirir.</p></div>
+      <div class="controls rv" style="--i:2">
+        <div class="btns">
+          <button class="btn" id="b-join" type="button">HORON yaz <span class="c">katıl</span></button>
+          <button class="btn" id="b-like" type="button">Beğen ×10 <span class="c">tempo ↑</span></button>
+          <button class="btn gift" type="button" data-gift="gul">Gül <span class="c">1 coin</span></button>
+          <button class="btn gift" type="button" data-gift="parfum">Parfüm <span class="c">20 · horon başı</span></button>
+          <button class="btn gift" type="button" data-gift="donut">Donut <span class="c">30 · kemençe</span></button>
+          <button class="btn gift" type="button" data-gift="galaksi">Galaksi <span class="c">1000 · SIKIŞTIR</span></button>
+        </div>
+        <div class="meter">
+          <div><b class="num" id="m-ring">0</b><span>halkada</span></div>
+          <div><b class="num" id="m-tempo">0</b><span>tempo</span></div>
+          <div><b class="num" id="m-coin">0</b><span>coin</span></div>
+          <div><b class="num" id="m-usd">$0</b><span>yayıncı payı</span></div>
+        </div>
+        <label class="toggle" for="auto"><input type="checkbox" id="auto" checked> Diğer izleyiciler de oynasın</label>
+        <p class="note">Canlandırmadır, gerçek yayın değil. 100 coin ≈ 0,53 $ yayıncı payı.</p>
+      </div>
+    </div>
+  </div></div>
+</section>
+
+<!-- 6 -->
+<section class="slide" id="halay" data-title="Format: Halay ve horon" data-notes="Halay formatı kendiliğinden bir akım olarak başladı, sonra haberlere çıktı. TikMax bunu hazır oyuna çevirdi. Kareler videonun dörtte biri, yarısı ve dörtte üçünden; tıklayınca büyüyor.">
+  <div class="in">
+    <div class="head rv"><div class="eyebrow">Format 1 · Halay ve horon</div><h2>Akım önce yayında doğdu, <em>sonra oyuna döndü</em></h2></div>
+    <div class="fmt-grid">
+      <div class="col rv" style="--i:1"><div class="side"><span class="dot"></span><span class="eyebrow">Neden tutuyor</span></div>
+        <div class="why"><p><b>Kimlik:</b> Karadeniz'den Doğu'ya herkes kendi oyununu tanıyor.</p><p><b>Görünürlük:</b> izleyicinin adı halkada, hediye verenin başında taç.</p><p><b>Toplu an:</b> Galaksi gelince tüm halka hızlanıyor; herkes aynı anı yaşıyor.</p></div>
+        <div class="chips"><button class="chip ghost" type="button" data-act="join">HORON yaz</button><button class="chip" style="background:var(--kirmizi)" type="button" data-gift="parfum">Parfüm gönder</button><button class="chip" style="background:var(--purple)" type="button" data-gift="galaksi">Galaksi gönder</button></div>
+        <p class="note">Butonlar demo slaytındaki aynı yayını etkiler.</p>
+      </div>
+      <div class="col rv" style="--i:2"><div class="side real"><span class="dot"></span><span class="eyebrow">Gerçek videolar</span></div>
+        <div class="vids">{{video:yqFDriQvloo}}{{video:1gfako9AXVo}}</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 7 -->
+<section class="slide" id="memleket" data-title="Format: Memleket ve 81 il" data-notes="Memleket rekabeti Türkiye'ye özgü ve çok güçlü. İnsanlar kendi şehri kazansın diye hediye gönderiyor. İki farklı firma aynı fikri farklı mekaniklerle yapmış: harita fethi ve kule.">
+  <div class="in">
+    <div class="head rv"><div class="eyebrow">Format 2 · Memleket</div><h2>"Benim şehrim kazansın" <em>en güçlü hediye sebebi</em></h2></div>
+    <div class="fmt-grid">
+      <div class="col rv" style="--i:1"><div class="side"><span class="dot"></span><span class="eyebrow">Simülasyon · oynayın</span></div>
+        <article class="sim"><canvas id="map" aria-label="81 il fethi oyunu simülasyonu"></canvas>
+          <p class="muted" style="font-size:14px">Takım seç, aslan gönder, haritada il kazan.</p>
+          <div class="chips"><button class="chip" style="background:var(--kirmizi)" type="button" data-team="0">Kırmızıya aslan</button><button class="chip" style="background:var(--blue)" type="button" data-team="1">Maviye aslan</button><button class="chip" style="background:var(--green)" type="button" data-team="2">Yeşile aslan</button></div>
+        </article></div>
+      <div class="col rv" style="--i:2"><div class="side real"><span class="dot"></span><span class="eyebrow">Gerçek videolar</span></div>
+        <div class="vids">{{video:yC-n6_BQtSI}}{{video:Nc89U0eQeq4}}</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 8 -->
+<section class="slide" id="ulke" data-title="Format: Ülke yarışı" data-notes="Ülke yarışı dünyada en çok satan LIVE oyun türlerinden biri. Türkiye'den bakınca doğal genişleme alanı Azerbaycan ve Arapça konuşan izleyiciler.">
+  <div class="in">
+    <div class="head rv"><div class="eyebrow">Format 3 · Ülke yarışı</div><h2>Aynı mekanik, <em>sınırların ötesinde</em></h2>
+      <p>Yorumla ülke kodunu yaz ya da hediye gönder; o ülkenin koşucusu ilerler. Global ölçekte en yaygın formatlardan biri.</p></div>
+    <div class="fmt-grid">
+      <div class="col rv" style="--i:1"><div class="side"><span class="dot"></span><span class="eyebrow">Simülasyon · oynayın</span></div>
+        <article class="sim"><canvas id="race" aria-label="Ülke yarışı simülasyonu"></canvas><div class="chips" id="raceChips"></div></article></div>
+      <div class="col rv" style="--i:2"><div class="side real"><span class="dot"></span><span class="eyebrow">Gerçek video</span></div>
+        <div class="vids one">{{video:4ZDbtNAMCKg}}</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 9 -->
+<section class="slide" id="dugun" data-title="Format: Mahalle ve düğün" data-notes="Statü oyunları: izleyici desteklendikçe evi büyüyor ya da arabası konvoyda öne geçiyor. Bu, mobil oyunlardaki ilerleme hissinin yayına taşınmış hali.">
+  <div class="in">
+    <div class="head rv"><div class="eyebrow">Format 4 · Mahalle ve düğün</div><h2>İlerleme hissi, <em>herkesin gözü önünde</em></h2>
+      <p>Mobil oyunlardaki seviye atlama, burada kalabalığın içinde oluyor: gecekondudan malikâneye, konvoyun sonundan gelin arabasının yanına.</p></div>
+    <div class="fmt-grid">
+      <div class="col rv" style="--i:1"><div class="side"><span class="dot"></span><span class="eyebrow">Simülasyon · oynayın</span></div>
+        <article class="sim"><canvas id="mahalle" aria-label="Mahalle oyunu simülasyonu"></canvas><div class="chips" id="houseChips"></div></article></div>
+      <div class="col rv" style="--i:2"><div class="side real"><span class="dot"></span><span class="eyebrow">Gerçek video</span></div>
+        <div class="vids one">{{video:n_uIgYamciQ}}</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 -->
+<section class="slide" id="telefon" data-title="Boşluk: telefondan oyun" data-notes="Rakip tablosundaki altı firmadan dördü bilgisayar istiyor. Yayıncının cebindeki cihaz telefon. Mobil-first oyun yapmak sizin uzmanlığınız; pazardaki en net boşluk burada.">
+  <div class="in"><div class="phonefirst">
+    <div class="col">
+      <div class="head rv"><div class="eyebrow">Pazardaki boşluk</div><h2>Yayıncının cebinde telefon var, <em>rakiplerin oyunu bilgisayar istiyor</em></h2>
+        <p>Telefonda akıcı çalışan, düşük gecikmeli bir LIVE oyunu yapmak; mobil oyun ekibinin her gün yaptığı iş.</p></div>
+      <div class="ratio-wrap rv" style="--i:1" role="img" aria-label="Altı rakipten dördü bilgisayar gerektiriyor">
+        <div class="ratio"><i style="height:64px"></i><i style="height:64px"></i><i style="height:64px"></i><i style="height:64px"></i><i class="ok" style="height:64px"></i><i class="ok" style="height:64px"></i></div>
+        <div><b class="num">4 / 6</b> <span class="muted">rakip bilgisayar gerektiriyor</span></div>
+        <p class="note">Kırmızı: PC şart. Gri: web ya da telefon. Rakipler slaytındaki tablodan.</p>
+      </div>
+    </div>
+    <div class="col rv" style="--i:2"><div class="side real"><span class="dot"></span><span class="eyebrow">Telefondan yayın nasıl görünüyor</span></div>
+      <div class="vids one">{{video:DB1KIqoU-Ls}}</div></div>
+  </div></div>
+</section>
+
+<!-- 11 -->
+<section class="slide" id="rakipler" data-title="Rakipler" data-notes="Yayıncılar bu oyunlara para ödemeye zaten alışık; fiyatlar 499 TL tek seferden 30 dolar aylığa kadar. Ama hiçbir oyuncu büyük değil ve hiçbiri bir oyun stüdyosu kalitesinde değil.">
+  <div class="in">
+    <div class="head rv"><div class="eyebrow">Rakipler</div><h2>Birkaç küçük firma var, <em>lider yok</em></h2>
+      <p>Yayıncılar oyuna para ödemeye alışık. Ama ortada stüdyo kalitesinde üretim yapan kimse yok.</p></div>
+    <div class="tablebox rv" style="--i:1"><table class="comp">
+      <thead><tr><th>Firma</th><th>Fiyat</th><th>Öne çıkan</th><th>Ne gerekiyor</th></tr></thead>
+      <tbody>
+        <tr><td>TikQo</td><td class="num">499 TL / oyun</td><td>Halay, düğün konvoyu, memleket</td><td><span class="tag pc">PC</span></td></tr>
+        <tr><td>CagiGames</td><td class="num">30 $ / ay</td><td>Türkiye haritası, GTA modları</td><td><span class="tag pc">PC</span> <span class="tag">Web</span></td></tr>
+        <tr><td>TikMax</td><td>Aylık üyelik</td><td>12 oyun, horon halkası</td><td><span class="tag">Web</span> <span class="tag mob">Telefon</span></td></tr>
+        <tr><td>QubeLive</td><td>Masaüstü yazılım</td><td>81 il fethi, 6 modül</td><td><span class="tag pc">PC</span></td></tr>
+        <tr><td>GiftArena</td><td>Ücretsiz başlangıç</td><td>500+ yayıncı iddiası</td><td><span class="tag">Web</span></td></tr>
+        <tr><td>AVCI LIVE</td><td>Kurulumlu satış</td><td>Türkiye hediye savaşı</td><td><span class="tag pc">PC</span></td></tr>
+      </tbody></table></div>
+    <div class="gaps">
+      <div class="rv" style="--i:2"><b>Telefondan oynama</b><p>Çoğu rakip bilgisayar istiyor; telefondan yayın yapan yayıncı dışarıda kalıyor.</p></div>
+      <div class="rv" style="--i:3"><b>Ajanslara toplu satış</b><p>Yüzlerce yayıncıyı yöneten ajanslara tek sözleşmeyle ulaşmak.</p></div>
+      <div class="rv" style="--i:4"><b>Yakın ülkeler</b><p>Azerice ve Arapça konuşan izleyici için yapılmış oyun neredeyse yok.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 12 -->
+<section class="slide" id="gelir" data-title="Gelir hesaplayıcı" data-notes="Kaydırıcıları birlikte oynatın. Varsayılan senaryo: 300 ödeyen yayıncı, 25 dolar aylık, iki test kanalı. Rakamlar varsayımdır, pilotta ölçülecek.">
+  <div class="in">
+    <div class="head rv"><div class="eyebrow">Gelir hesaplayıcı</div><h2>Rakamları <em>birlikte oynatalım</em></h2>
+      <p>Fiyatlar Türkiye'deki rakiplerin fiyatlarından alındı. Sonuçlar tahmindir; pilotta ölçülecek.</p></div>
+    <div class="calc">
+      <div class="rv" style="--i:1">
+        <div class="field"><label>Lisans modeli</label>
+          <div class="seg" role="group" aria-label="Lisans modeli"><button type="button" id="mSub" aria-pressed="true">Aylık abonelik</button><button type="button" id="mOne" aria-pressed="false">Tek seferlik</button></div></div>
+        <div class="field"><label for="creators">Ödeyen yayıncı <output id="o-creators" class="num"></output></label>
+          <input type="range" id="creators" min="10" max="3000" step="10" value="300"></div>
+        <div class="field" id="f-price"><label for="price">Aylık fiyat <output id="o-price" class="num"></output></label>
+          <input type="range" id="price" min="5" max="40" step="1" value="25"><div class="help">Rakiplerde 20–30 $.</div></div>
+        <div class="field"><label for="channels">Kendi test kanalımız <output id="o-channels" class="num"></output></label>
+          <input type="range" id="channels" min="0" max="10" step="1" value="2"></div>
+        <div class="field"><label for="hourly">Kanal başı saatlik hediye geliri <output id="o-hourly" class="num"></output></label>
+          <input type="range" id="hourly" min="2" max="60" step="1" value="10"></div>
+        <div class="field"><label for="hours">Hesap başına günlük yayın <output id="o-hours" class="num"></output></label>
+          <input type="range" id="hours" min="1" max="8" step="1" value="4"></div>
+      </div>
+      <div class="result rv" style="--i:2" aria-live="polite">
+        <div><div class="eyebrow" id="r-label">Aylık brüt gelir</div><div class="bigval num" id="r-total"></div><div class="sub" id="r-year"></div></div>
+        <div class="rows">
+          <div><span id="r-lic-label">Lisans</span><span id="r-lic"></span></div>
+          <div><span>Kendi test kanallarımız</span><span id="r-ch"></span></div>
+          <div><span>Kıyas: TikQo</span><span>499 TL / oyun</span></div>
+          <div><span>Kıyas: CagiGames</span><span>30 $ / ay, 6 oyun</span></div>
+        </div>
+        <p class="note">Varsayımdır. Kur: 1 $ = <span id="fx"></span> TL.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 13 -->
+<section class="slide" id="ortaklik" data-title="Ortaklık modeli" data-notes="Üç seçenek sunuyoruz, önerimiz ortadaki: ortak stüdyo. Siz üretimi, biz pazarı ve yayıncı ilişkisini getiriyoruz. Gelir paylaşımı pilot sonuçlarına göre netleşir.">
+  <div class="in">
+    <div class="head rv"><div class="eyebrow">Birlikte nasıl çalışırız</div><h2>Üç model, <em>önerimiz ortak stüdyo</em></h2></div>
+    <div class="models">
+      <article class="model rv" style="--i:1"><span class="tagline">Hafif</span><h3>Lisans ortaklığı</h3><p>Biz oyunu yaparız, yayıncılara dağıtırız; siz markanızı ya da karakterlerinizi lisanslarsınız.</p>
+        <ul><li>Sizin için sıfır geliştirme yükü</li><li>IP görünürlüğü, telif geliri</li></ul></article>
+      <article class="model pick rv" style="--i:2"><span class="tagline">Önerimiz</span><h3>Ortak stüdyo</h3><p>Siz oyun üretimini, biz pazar bilgisini, yayıncı ve ajans ağını getiririz. Gelir paylaşılır.</p>
+        <ul><li>2–3 haftada bir yeni format</li><li>Telefonda çalışan, stüdyo kalitesinde oyunlar</li><li>Ajanslara toplu satış</li></ul></article>
+      <article class="model rv" style="--i:3"><span class="tagline">Derin</span><h3>Yeni dikey</h3><p>LIVE oyunları stüdyonuzun içinde ayrı bir iş birimi olur; biz kuruluşta ekibe katılırız.</p>
+        <ul><li>Tam kontrol ve tüm gelir sizde</li><li>Daha yüksek başlangıç yatırımı</li></ul></article>
+    </div>
+    <div class="split rv" style="--i:4">
+      <div><b>Sizden</b><span>Oyun geliştirme, sanat, live-ops ve kalite güvencesi</span></div>
+      <div><b>Bizden</b><span>Format araştırması, yayıncı ve ajans ilişkileri, test kanalları, TikTok kuralları</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 14 -->
+<section class="slide" id="plan" data-title="90 günlük pilot" data-notes="Büyük yatırım istemiyoruz. Üç adım, her adımın sonunda bir devam şartı. Şart sağlanmazsa duruyoruz ya da yön değiştiriyoruz.">
+  <div class="in">
+    <div class="head rv"><div class="eyebrow">90 günlük pilot</div><h2>Önce küçük dene, <em>ölç, sonra büyüt</em></h2>
+      <p>Her adımın sonunda bir devam şartı var. Sağlanmazsa yön değiştiririz.</p></div>
+    <div class="plan">
+      <div class="step rv" style="--i:1"><div class="dot"></div><span class="eyebrow">Hafta 1–3</span><h3>3 kültürel oyun</h3><span class="muted">Halay, memleket, düğün; telefonda ve bilgisayarda çalışır</span><span class="gate">Devam şartı: canlı yayında sorunsuz çalışıyor</span></div>
+      <div class="step rv" style="--i:2"><div class="dot"></div><span class="eyebrow">Hafta 4–8</span><h3>2 test kanalı</h3><span class="muted">Kendi hesaplarımızda haftada 20+ saat yayın, hediye geliri ölçümü</span><span class="gate">Devam şartı: kanal başı saatte 10 $+ hediye</span></div>
+      <div class="step rv" style="--i:3"><div class="dot"></div><span class="eyebrow">Hafta 9–12</span><h3>Ücretli pilot</h3><span class="muted">5 ajans ve 20 yayıncıya ücretli deneme</span><span class="gate">Devam şartı: 20 yayıncı para ödüyor</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 15 -->
+<section class="slide" id="riskler" data-title="Riskler" data-notes="Riskleri biz söyleyelim. En büyüğü resmi bağlantı olmaması; bunu tek bir bağlantı katmanına bağımlı olmayarak yönetiyoruz.">
+  <div class="in">
+    <div class="head rv"><div class="eyebrow">Riskler ve önlemler</div><h2>Bilinen riskler, <em>tasarımla yönetiliyor</em></h2></div>
+    <ul class="risklist">
+      <li class="rv" style="--i:1"><b>Resmi bağlantı yok</b>TikTok bu oyunlar için resmi altyapı sunmuyor; bağlantı zaman zaman bozulabilir.<span class="fix">Önlem: bağlantı katmanı değiştirilebilir, oyun yorum olmadan da çalışır.</span></li>
+      <li class="rv" style="--i:2"><b>Başında kimse olmayan yayın yasak</b>TikTok otomatik yayınları kısıtlıyor.<span class="fix">Önlem: oyunlar yayıncının aktif olduğu biçimde tasarlanır.</span></li>
+      <li class="rv" style="--i:3"><b>15 yaş altı yasağı</b>1 Kasım 2026'dan itibaren Türkiye'de 15 yaş altına sosyal medya kapalı.<span class="fix">Önlem: yetişkin kitleye göre tema ve dil.</span></li>
+      <li class="rv" style="--i:4"><b>Kumar algısı</b>Çark, piyango gibi şansa dayalı oyunlar yanlış anlaşılabilir.<span class="fix">Önlem: yalnızca beceri ve rekabet odaklı mekanikler.</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- 16 -->
+<section class="slide" id="kapanis" data-title="Kapanış" data-notes="Somut talep: 90 günlük pilot için küçük bir ekip. Sorular için açık.">
+  <div class="in"><div class="close">
+    <div class="col">
+      <div class="eyebrow rv">Bir sonraki adım</div>
+      <h2 class="rv" style="--i:1">Halayı birlikte <em>kuralım.</em></h2>
+      <p class="muted rv" style="--i:2;font-size:18px;max-width:44ch">Pazar büyüyor, lider yok, kazanacak beceri sizde. 90 günde tutup tutmadığını ölçelim.</p>
+    </div>
+    <ol class="ask">
+      <li class="rv" style="--i:2"><span class="num">01</span><div><b>1 oyun geliştirici + 1 sanatçı</b><span>90 gün, yarı zamanlı da olabilir</span></div></li>
+      <li class="rv" style="--i:3"><span class="num">02</span><div><b>3 format, 2 test kanalı</b><span>Halay, memleket, düğün</span></div></li>
+      <li class="rv" style="--i:4"><span class="num">03</span><div><b>12. haftada karar toplantısı</b><span>Devam şartlarına göre büyüt ya da durdur</span></div></li>
+    </ol>
+  </div>
+  <ul class="sources rv" style="--i:5">
+    <li><a href="https://www.forbes.com.tr/ekonomi/tiktok-raporu-turkiye-de-canli-yayin-pazari-2030-a-kadar-5-milyar-dolari-asacak" target="_blank" rel="noopener">Forbes Türkiye: TikTok/Kearney raporu</a></li>
+    <li><a href="https://www.gzt.com/hayat/tiktok-halay-yayinlari-horon-akimi-neden-izleniyor-ne-kadar-kazandiriyor-4276953" target="_blank" rel="noopener">GZT: halay ve horon yayınları</a></li>
+    <li><a href="https://www.cnbce.com/teknoloji/tiktokta-yeni-akim-halay-ve-horon-cektirerek-para-kazaniyorlar-h41380" target="_blank" rel="noopener">CNBC-e: halay ve horon yayınları</a></li>
+    <li><a href="https://dotesports.com/general/news/tiktok-live-streaming-market-share" target="_blank" rel="noopener">Dot Esports: TikTok LIVE Q2 2026</a></li>
+    <li><a href="https://ttcalculator.net/learn/tiktok-coin-value-usd/" target="_blank" rel="noopener">TT Calculator: coin değeri</a></li>
+    <li><a href="https://streamer.guide/guides/tiktok-live-rules" target="_blank" rel="noopener">Streamer Guide: LIVE kuralları 2026</a></li>
+    <li><a href="https://tikqo.com/" target="_blank" rel="noopener">TikQo</a> · <a href="https://cagigames.com/" target="_blank" rel="noopener">CagiGames</a> · <a href="https://tikmax.tr/" target="_blank" rel="noopener">TikMax</a> · <a href="https://giftarena.aykutbilisim.com/" target="_blank" rel="noopener">GiftArena</a></li>
+    <li>Simülasyonlar temsilidir. Şirket sayıları kendi beyanlarıdır. Gelir hesapları varsayımdır. 9 Kasım 2026.</li>
+  </ul>
+  </div>
+</section>
+
+<div class="overview" id="overview" hidden>
+  <div class="eyebrow" style="max-width:1200px;margin:0 auto">Tüm slaytlar · Esc ile kapat</div>
+  <div class="ov-grid" id="ovGrid"></div>
+</div>
+<div class="notes" id="notes" hidden><b>Konuşmacı notu</b><span id="notesText"></span></div>
+
+<nav class="bar" aria-label="Sunum gezintisi">
+  <div class="progress" id="progress"></div>
+  <button class="nb" id="prev" type="button" aria-label="Önceki slayt">←</button>
+  <div class="where"><span class="num" id="count">01 / 16</span><span id="stitle">Kapak</span></div>
+  <span class="kbd">← → · N · O</span>
+  <button class="nb" id="bNotes" type="button" aria-pressed="false" aria-label="Konuşmacı notları">Not</button>
+  <button class="nb" id="bOv" type="button" aria-pressed="false" aria-label="Tüm slaytlar">▦<span class="lbl"> Slaytlar</span></button>
+  <button class="nb" id="bFs" type="button" aria-label="Tam ekran">⛶</button>
+  <button class="nb" id="next" type="button" aria-label="Sonraki slayt">→</button>
+</nav>
+</div>
+
+<div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-label="Video karesi">
+  <div class="lb-box">
+    <img id="lbImg" alt="">
+    <div class="lb-row">
+      <div class="t"><span id="lbTitle"></span><small id="lbPos"></small></div>
+      <button class="nb" id="lbPrev" type="button" aria-label="Önceki kare">←</button>
+      <button class="nb" id="lbNext" type="button" aria-label="Sonraki kare">→</button>
+      <a class="nb" id="lbGo" href="#" target="_blank" rel="noopener" style="text-decoration:none;color:var(--ink);border-color:rgba(229,72,77,.6)">YouTube'da izle</a>
+      <button class="nb" id="lbClose" type="button" aria-label="Kapat">✕</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+const $=id=>document.getElementById(id);
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const C={night:css('--night'),square:css('--square'),line:css('--line'),lamp:css('--lamp'),red:css('--kirmizi'),fog:css('--fog'),ink:css('--ink'),
+  blue:css('--blue'),green:css('--green'),teal:css('--teal'),purple:css('--purple')};
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const fmt=n=>Math.round(n).toLocaleString('tr-TR');
+function fit(cv){const r=cv.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);
+  cv.width=Math.max(1,Math.round(r.width*d));cv.height=Math.max(1,Math.round(r.height*d));
+  const x=cv.getContext('2d');x.setTransform(d,0,0,d,0,0);return {x,w:r.width,h:r.height,cv};}
+
+/* ================= deck ================= */
+const slides=[...document.querySelectorAll('.slide')];
+let cur=0;
+const pad=n=>String(n).padStart(2,'0');
+const ovGrid=$('ovGrid');
+slides.forEach((s,i)=>{const b=document.createElement('button');b.type='button';
+  b.innerHTML='<span class="num"></span><span></span>';b.firstChild.textContent=pad(i+1);b.lastChild.textContent=s.dataset.title;
+  b.onclick=()=>{toggleOv(false);go(i);};ovGrid.append(b);
+  const no=document.createElement('div');no.className='slide-no';no.textContent=pad(i+1)+' / '+pad(slides.length);s.append(no);});
+function go(i,fromHash){i=Math.max(0,Math.min(slides.length-1,i));
+  slides.forEach((s,k)=>{s.classList.toggle('on',k===i);s.classList.toggle('past',k<i);s.setAttribute('aria-hidden',k!==i);s.inert=k!==i;});
+  cur=i;const s=slides[i];s.scrollTop=0;s.scrollLeft=0;deckEl.scrollLeft=0;deckEl.scrollTop=0;
+  $('count').textContent=pad(i+1)+' / '+pad(slides.length);$('stitle').textContent=s.dataset.title;
+  $('progress').style.width=((i+1)/slides.length*100)+'%';$('notesText').textContent=s.dataset.notes||'';
+  [...ovGrid.children].forEach((b,k)=>b.setAttribute('aria-current',k===i));
+  $('prev').disabled=i===0;$('next').disabled=i===slides.length-1;
+  if(!fromHash&&location.hash!=='#'+s.id){try{history.replaceState(null,'','#'+s.id);}catch(e){location.hash=s.id;}}
+  requestAnimationFrame(refit);}
+const next=()=>go(cur+1),prev=()=>go(cur-1);
+/* hash jumps scroll the clipped deck toward the target; keep it pinned */
+const deckEl=$('deck');deckEl.addEventListener('scroll',()=>{deckEl.scrollLeft=0;deckEl.scrollTop=0;});
+$('next').onclick=next;$('prev').onclick=prev;
+function toggleOv(v){const o=$('overview');o.hidden=v===undefined?!o.hidden:!v;$('bOv').setAttribute('aria-pressed',!o.hidden);}
+function toggleNotes(){const n=$('notes');n.hidden=!n.hidden;$('bNotes').setAttribute('aria-pressed',!n.hidden);}
+$('bOv').onclick=()=>toggleOv();$('bNotes').onclick=toggleNotes;
+$('bFs').onclick=()=>{try{const d=document;if(d.fullscreenElement)d.exitFullscreen();else{const p=d.documentElement.requestFullscreen?.();p&&p.catch&&p.catch(()=>{});}}catch(e){}};
+const fromHash=()=>{const k=slides.findIndex(s=>'#'+s.id===location.hash);go(k<0?0:k,true);};
+addEventListener('hashchange',fromHash);
+addEventListener('keydown',e=>{
+  if(!$('lb').hidden){if(e.key==='Escape')closeLb();else if(e.key==='ArrowRight')lbStep(1);else if(e.key==='ArrowLeft')lbStep(-1);return;}
+  const t=e.target;if(t.isContentEditable||/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))return;
+  if(e.metaKey||e.ctrlKey||e.altKey)return;
+  const k=e.key;
+  if(k==='Escape'){toggleOv(false);return;}
+  if(k==='ArrowRight'||k==='PageDown'||(k===' '&&!e.shiftKey)){e.preventDefault();next();}
+  else if(k==='ArrowLeft'||k==='PageUp'||(k===' '&&e.shiftKey)){e.preventDefault();prev();}
+  else if(k==='Home'){go(0);}else if(k==='End'){go(slides.length-1);}
+  else if(k==='n'||k==='N'){toggleNotes();}else if(k==='o'||k==='O'){toggleOv();}
+  else if(k==='f'||k==='F'){$('bFs').click();}});
+let tx=null,ty=0;
+$('deck').addEventListener('touchstart',e=>{if(e.target.closest('canvas,input,.tablebox,.frames,[contenteditable]')){tx=null;return;}tx=e.touches[0].clientX;ty=e.touches[0].clientY;},{passive:true});
+$('deck').addEventListener('touchend',e=>{if(tx===null)return;const dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;tx=null;
+  if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.6){dx<0?next():prev();}},{passive:true});
+
+/* client name, remembered per viewer */
+const cl=$('client');
+try{const v=localStorage.getItem('halay-client');if(v)cl.textContent=v;}catch(e){}
+cl.addEventListener('input',()=>{try{localStorage.setItem('halay-client',cl.textContent.trim());}catch(e){}});
+cl.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();cl.blur();}});
+
+/* ================= lightbox ================= */
+let lbCard=null,lbIdx=0;
+function showLb(){const fr=lbCard.querySelectorAll('.frame');const b=fr[lbIdx];
+  $('lbImg').src=b.querySelector('img').src;$('lbTitle').textContent=lbCard.dataset.title;
+  $('lbPos').textContent='Videonun '+b.dataset.pos+' noktası · '+(lbIdx+1)+' / '+fr.length;$('lbGo').href=lbCard.dataset.url;}
+function lbStep(d){const n=lbCard.querySelectorAll('.frame').length;lbIdx=(lbIdx+d+n)%n;showLb();}
+let lbReturn=null;
+function closeLb(){$('lb').hidden=true;lbReturn&&lbReturn.focus();}
+document.querySelectorAll('.vcard').forEach(card=>card.querySelectorAll('.frame').forEach((b,i)=>b.onclick=()=>{
+  lbCard=card;lbIdx=i;lbReturn=b;showLb();$('lb').hidden=false;$('lbClose').focus();}));
+$('lbPrev').onclick=()=>lbStep(-1);$('lbNext').onclick=()=>lbStep(1);$('lbClose').onclick=closeLb;
+$('lb').addEventListener('click',e=>{if(e.target===$('lb'))closeLb();});
+
+/* ================= halay (shared state, drawn on two phones) ================= */
+const LW=280,LH=498;  /* logical phone screen */
+const NAMES=['ayse_34','mert.k','trabzonlu61','elif_07','can.07','deniz','selin','bursali16','rizeli53','ozan','zeynep','hakan_06','ece','burak','merve','kemal'];
+const feed=$('feed'),banner=$('banner');
+const BODY=[C.blue,C.purple,C.teal,C.green,C.red,'#F08A3C'];
+const st={ring:[],tempo:20,coin:0,angle:0,lead:'elif_07',kem:null,sikis:0,parts:[],viewers:3104};
+function addDancer(name){if(st.ring.length>=28)st.ring.shift();st.ring.push({name,col:pick(BODY)});}
+for(let i=0;i<10;i++)addDancer(NAMES[i]);
+function say(name,msg){const d=document.createElement('div');d.innerHTML='<b></b>';d.firstChild.textContent=name;d.append(msg);feed.append(d);
+  while(feed.children.length>4)feed.firstChild.remove();}
+let bt;function flash(t,col){banner.textContent=t;banner.style.background=col||C.red;banner.classList.add('show');clearTimeout(bt);bt=setTimeout(()=>banner.classList.remove('show'),1800);}
+function burst(n,cols){for(let i=0;i<n;i++)st.parts.push({x:LW/2,y:LH*.5,vx:(Math.random()-.5)*6,vy:-Math.random()*6-1,life:60+Math.random()*30,c:pick(cols)});}
+const GIFTS={gul:{c:1,t:n=>`Gül  →  ${n} halaya girdi`,do:n=>{addDancer(n);burst(10,[C.red,'#ff9aa2']);}},
+  parfum:{c:20,t:n=>`Parfüm  →  ${n} horon başı oldu`,do:n=>{if(!st.ring.find(d=>d.name===n))addDancer(n);st.lead=n;burst(24,[C.lamp,'#fff2c2']);}},
+  donut:{c:30,t:n=>`Donut  →  kemençe ${n}'de`,do:n=>{st.kem=n;burst(18,[C.teal,C.lamp]);}},
+  galaksi:{c:1000,t:n=>`Galaksi  →  ${n} SIKIŞTIR başlattı!`,do:n=>{st.sikis=240;st.tempo=100;burst(90,[C.lamp,C.red,C.purple,C.teal,'#fff']);}}};
+function gift(k,name){const g=GIFTS[k];st.coin+=g.c;g.do(name);flash(g.t(name),k==='galaksi'?C.purple:C.red);if(name==='sen')say('sen',k==='galaksi'?'Galaksi gönderdi':'hediye gönderdi');update();}
+function like(n){st.tempo=Math.min(100,st.tempo+n);update();}
+function update(){$('m-ring').textContent=st.ring.length;$('m-tempo').textContent=Math.round(st.tempo);
+  $('m-coin').textContent=fmt(st.coin);$('m-usd').textContent='$'+(st.coin*0.0053).toFixed(2).replace('.',',');}
+const join=()=>{addDancer('sen');say('sen','HORON');update();};
+$('b-join').onclick=join;document.querySelectorAll('[data-act=join]').forEach(b=>b.onclick=join);
+$('b-like').onclick=()=>{like(10);say('sen','beğeni ×10');};
+document.querySelectorAll('[data-gift]').forEach(b=>b.onclick=()=>gift(b.dataset.gift,'sen'));
+const auto=$('auto');
+setInterval(()=>{if(!auto.checked)return;const r=Math.random(),n=pick(NAMES);
+  if(r<.45){addDancer(n);say(n,pick(['HORON','HORON','halay!','kemençe bende']));}
+  else if(r<.75){like(4+Math.random()*6);}
+  else if(r<.9){gift('gul',n);}
+  else if(r<.97){gift(pick(['parfum','donut']),n);}
+  st.viewers+=Math.round((Math.random()-.4)*20);
+  document.querySelectorAll('[data-viewers]').forEach(v=>v.textContent=fmt(st.viewers)+' izliyor');update();},1400);
+let CTX;
+function person(x,y,s,col,crown){const c=CTX;c.fillStyle=col;c.beginPath();c.roundRect(x-s*.55,y-s*.1,s*1.1,s*1.3,s*.3);c.fill();
+  c.fillStyle='#F1D3B3';c.beginPath();c.arc(x,y-s*.45,s*.5,0,7);c.fill();
+  if(crown){c.fillStyle=C.lamp;const b=y-s*.9;c.beginPath();c.moveTo(x-s*.5,b);c.lineTo(x-s*.5,b-s*.55);c.lineTo(x-s*.2,b-s*.3);c.lineTo(x,b-s*.65);
+    c.lineTo(x+s*.2,b-s*.3);c.lineTo(x+s*.5,b-s*.55);c.lineTo(x+s*.5,b);c.fill();}}
+function stepHalay(){if(!reduce)st.angle+=0.004+st.tempo*0.00022;
+  st.parts=st.parts.filter(p=>p.life-->0);for(const p of st.parts){p.x+=p.vx;p.y+=p.vy;p.vy+=.12;}
+  if(st.sikis>0)st.sikis--;st.tempo=Math.max(8,st.tempo-(st.sikis?0:0.05));}
+function drawHalay(t,T){const c=T.x,w=LW,h=LH;CTX=c;c.save();c.scale(T.w/LW,T.h/LH);c.clearRect(0,0,w,h);
+  const g=c.createLinearGradient(0,0,0,h);g.addColorStop(0,'#0B1020');g.addColorStop(1,'#1A2340');c.fillStyle=g;c.fillRect(0,0,w,h);
+  c.strokeStyle='#3A4565';c.lineWidth=1.2;c.beginPath();c.moveTo(0,h*.16);c.quadraticCurveTo(w/2,h*.26,w,h*.16);c.stroke();
+  for(let i=0;i<10;i++){const u=(i+.5)/10,lx=w*u,ly=h*.16+(h*.1)*(1-Math.pow(2*u-1,2))*.5;const on=reduce?1:.6+.4*Math.sin(t/300+i*1.7);
+    c.globalAlpha=on;c.fillStyle=[C.lamp,C.red,C.teal][i%3];c.beginPath();c.arc(lx,ly+4,3.2,0,7);c.fill();c.globalAlpha=1;}
+  c.fillStyle=C.fog;c.font='600 10px Figtree, sans-serif';c.fillText('TEMPO',14,h*.1+3);
+  for(let i=0;i<10;i++){c.fillStyle=i<st.tempo/10?(st.sikis?C.lamp:C.red):'#2C3654';c.beginPath();c.roundRect(58+i*((w-74)/10),h*.1-4,(w-74)/10-3,7,3);c.fill();}
+  if(st.tempo>70){c.fillStyle=C.lamp;c.font='800 13px "Bricolage Grotesque", sans-serif';c.textAlign='right';c.fillText(st.sikis?'SIKIŞTIR!':'HIZLI!',w-14,h*.1+24);c.textAlign='left';}
+  const cx=w/2,cy=h*.43,R=w*.36*(st.sikis?.78:1);
+  c.fillStyle='rgba(38,49,77,.8)';c.beginPath();c.ellipse(cx,cy,R+18,(R+18)*.5,0,0,7);c.fill();
+  const n=st.ring.length,s=Math.max(9,Math.min(14,180/Math.max(n,8)));
+  const pts=st.ring.map((d,i)=>{const a=st.angle+i*2*Math.PI/n;return {d,x:cx+R*Math.cos(a),y:cy+R*.48*Math.sin(a)+(reduce?0:Math.sin(t/(160-st.tempo)+i)*2)};});
+  pts.sort((a,b)=>a.y-b.y);
+  for(const p of pts){const lead=p.d.name===st.lead;person(p.x,p.y,lead?s*1.15:s,p.d.col,lead);
+    if(lead||p.d.name==='sen'){c.font='700 9px Figtree, sans-serif';c.textAlign='center';c.fillStyle=lead?C.lamp:C.ink;c.fillText(p.d.name,p.x,p.y>cy?p.y+s*2.4:p.y-s*1.9-(lead?6:0));c.textAlign='left';}}
+  person(cx,cy+2,s*1.2,C.lamp,false);c.strokeStyle='#8B5A2B';c.lineWidth=3;c.beginPath();c.moveTo(cx+s*.6,cy+s);c.lineTo(cx+s*1.1,cy-s*.4);c.stroke();
+  if(st.kem){c.font='700 9px Figtree, sans-serif';c.textAlign='center';c.fillStyle=C.teal;c.fillText('kemençe: '+st.kem,cx,cy+s*2.4);c.textAlign='left';}
+  for(const p of st.parts){c.fillStyle=p.c;c.fillRect(p.x,p.y,3,5);}
+  c.restore();}
+
+/* ================= map ================= */
+const TEAMS=[C.red,C.blue,C.green];
+const LABELS={'2,1':'İST','3,3':'ANK','1,1':'İZM','2,7':'ERZ','1,4':'KON','3,6':'TRB','0,6':'ANT','4,2':'BUR'};
+const hexes=[];for(let r=0;r<6;r++)for(let c=0;c<9;c++){if((r===0&&c===0)||(r===5&&(c===0||c===8||c===7)))continue;hexes.push({r,c,t:Math.floor(Math.random()*3),flash:0});}
+function takeHex(team,k){for(let i=0;i<k;i++){const others=hexes.filter(h=>h.t!==team);if(!others.length)break;const h=pick(others);h.t=team;h.flash=30;}}
+document.querySelectorAll('[data-team]').forEach(b=>b.onclick=()=>takeHex(+b.dataset.team,4));
+function drawMap(M){const {x:c,w,h}=M;c.clearRect(0,0,w,h);c.fillStyle=C.night;c.fillRect(0,0,w,h);
+  const counts=[0,0,0];hexes.forEach(x=>counts[x.t]++);const total=hexes.length;
+  ['KIRMIZI','MAVİ','YEŞİL'].forEach((nm,i)=>{const bw=(w-24)/3;c.fillStyle=TEAMS[i];c.beginPath();c.roundRect(12+i*bw+2,10,bw-4,30,8);c.fill();
+    c.fillStyle='#fff';c.font='800 13px "Bricolage Grotesque", sans-serif';c.textAlign='center';c.fillText(Math.round(counts[i]/total*81)+' il',12+i*bw+bw/2,26);
+    c.font='700 8px Figtree, sans-serif';c.fillText(nm,12+i*bw+bw/2,36);});
+  const r=Math.min(w/19,(h-56)/10.5),gx=w/2-8*r*1.73/2-r*.4,gy=56+r;
+  for(const x of hexes){const hx=gx+x.c*r*1.73+(x.r%2?r*.865:0),hy=gy+x.r*r*1.5;c.beginPath();
+    for(let k=0;k<6;k++){const a=Math.PI/6+k*Math.PI/3;c.lineTo(hx+r*.95*Math.cos(a),hy+r*.95*Math.sin(a));}c.closePath();
+    c.fillStyle=TEAMS[x.t];c.fill();if(x.flash>0){c.strokeStyle=C.lamp;c.lineWidth=2.5;c.stroke();x.flash--;}
+    const lb=LABELS[x.r+','+x.c];if(lb){c.fillStyle='#fff';c.font='700 8px Figtree, sans-serif';c.textAlign='center';c.fillText(lb,hx,hy+3);}}
+  c.textAlign='left';}
+setInterval(()=>takeHex(Math.floor(Math.random()*3),1),1600);
+
+/* ================= race ================= */
+const LANES=[{k:'TR',c:C.red,p:.2},{k:'AZ',c:C.teal,p:.15},{k:'DE',c:C.lamp,p:.12},{k:'BR',c:C.green,p:.1}];
+let winner=null,winT=0;
+LANES.forEach(L=>{const b=document.createElement('button');b.type='button';b.className='chip';b.style.background=L.c;b.style.color=L.k==='DE'?'#1A1406':'#fff';
+  b.textContent=L.k+' için gül ×10';b.onclick=()=>{if(!winner)L.p=Math.min(1,L.p+.08);};$('raceChips').append(b);});
+function drawRace(R){const {x:c,w,h}=R;c.clearRect(0,0,w,h);c.fillStyle=C.night;c.fillRect(0,0,w,h);
+  c.fillStyle=C.ink;c.font='800 13px "Bricolage Grotesque", sans-serif';c.textAlign='center';c.fillText(winner?winner+' KAZANDI!':'ÜLKE YARIŞI',w/2,24);c.textAlign='left';
+  const top=40,lh=(h-56)/4,x0=46,x1=w-16;
+  LANES.forEach((L,i)=>{const y=top+i*lh;c.fillStyle='#202A44';c.beginPath();c.roundRect(x0,y+lh*.2,x1-x0,lh*.6,8);c.fill();
+    c.fillStyle=L.c;c.beginPath();c.roundRect(x0,y+lh*.2,Math.max(10,(x1-x0)*L.p),lh*.6,8);c.fill();
+    c.beginPath();c.roundRect(10,y+lh*.2,30,lh*.6,6);c.fill();c.fillStyle=L.k==='DE'?'#1A1406':'#fff';c.font='800 11px Figtree, sans-serif';c.textAlign='center';c.fillText(L.k,25,y+lh*.55);c.textAlign='left';
+    if(!winner&&L.p>=1){winner=L.k;winT=120;}});
+  c.strokeStyle=C.lamp;c.setLineDash([4,4]);c.beginPath();c.moveTo(x1,top);c.lineTo(x1,top+lh*4);c.stroke();c.setLineDash([]);
+  if(winner&&--winT<=0){winner=null;LANES.forEach(L=>L.p=.05+Math.random()*.1);}}
+setInterval(()=>{if(!winner){const L=pick(LANES);L.p=Math.min(1,L.p+.03);}},700);
+
+/* ================= mahalle ================= */
+const LV=['Gecekondu','Kulübe','Bahçeli müstakil','İki katlı','Modern dubleks','Havuzlu villa','Lüks köşk','Malikâne'];
+const houses=[{n:'selin',l:1},{n:'mert.k',l:3},{n:'ayse_34',l:2},{n:'can.07',l:5},{n:'deniz',l:4}];
+let lastUp=null;
+houses.forEach((hs,i)=>{const b=document.createElement('button');b.type='button';b.className='chip';b.style.background=C.purple;b.textContent=hs.n+"'e destek";
+  b.onclick=()=>{hs.l=Math.min(8,hs.l+1);lastUp={i,t:90};};$('houseChips').append(b);});
+function drawMahalle(MH){const {x:c,w,h}=MH;c.clearRect(0,0,w,h);c.fillStyle=C.night;c.fillRect(0,0,w,h);
+  const base=h*.78,hw=(w-20)/houses.length;c.fillStyle='#202A44';c.fillRect(0,base,w,4);
+  const cols=['#7C6E5E','#B9845A','#D7A964','#C9D3E3','#E8EEF7','#F5F0E3','#F7E6B8','#FFF6D8'];
+  houses.forEach((hs,i)=>{const x=10+i*hw+hw*.12,bw=hw*.76,hh=14+hs.l*(base-50)/9;
+    c.fillStyle=cols[hs.l-1];c.fillRect(x,base-hh,bw,hh);
+    c.fillStyle=hs.l>=6?C.blue:C.red;c.beginPath();c.moveTo(x-bw*.08,base-hh);c.lineTo(x+bw/2,base-hh-14);c.lineTo(x+bw*1.08,base-hh);c.fill();
+    c.fillStyle=C.lamp;const win=Math.min(hs.l*2,12);for(let k=0;k<win;k++){const row=Math.floor(k/2);if(base-10-row*14<base-hh+6)break;c.fillRect(x+bw*(k%2?.58:.16),base-14-row*14,bw*.26,7);}
+    if(hs.l>=6){c.fillStyle=C.teal;c.fillRect(x-4,base+8,bw+8,6);}
+    c.fillStyle=C.fog;c.font='700 9px Figtree, sans-serif';c.textAlign='center';c.fillText(hs.n,x+bw/2,base+28);
+    c.fillStyle=C.lamp;c.font='800 9px "JetBrains Mono", monospace';c.fillText('Sv '+hs.l,x+bw/2,base-hh-20);});
+  c.textAlign='center';c.fillStyle=C.ink;c.font='800 13px "Bricolage Grotesque", sans-serif';
+  c.fillText(lastUp&&lastUp.t>0?houses[lastUp.i].n+': '+LV[houses[lastUp.i].l-1]+'!':'MAHALLE · 8 SEVİYE',w/2,22);c.textAlign='left';
+  if(lastUp)lastUp.t--;}
+setInterval(()=>{const hs=pick(houses);if(hs.l<8&&Math.random()<.5){hs.l++;lastUp={i:houses.indexOf(hs),t:60};}
+  if(houses.every(x=>x.l>=7))houses.forEach(x=>x.l=1+Math.floor(Math.random()*3));},2600);
+
+/* ================= render: only the visible slide's canvases ================= */
+const VIEWS=[['halayCover',(t,T)=>drawHalay(t,T)],['halayDemo',(t,T)=>drawHalay(t,T)],['map',(t,T)=>drawMap(T)],['race',(t,T)=>drawRace(T)],['mahalle',(t,T)=>drawMahalle(T)]]
+  .map(([id,fn])=>({cv:$(id),fn,T:null}));
+function refit(){for(const v of VIEWS){v.T=v.cv.closest('.slide').classList.contains('on')?fit(v.cv):null;}}
+addEventListener('resize',refit);
+function loop(t){stepHalay();for(const v of VIEWS)if(v.T&&v.T.w>1)v.fn(t,v.T);requestAnimationFrame(loop);}
+say('ayse_34','HORON');say('trabzonlu61','kemençe bende!');say('mert.k','HORON');update();
+
+/* ================= calculator ================= */
+const FX=42;$('fx').textContent=FX;let model='sub';
+function calc(){const n=+$('creators').value,p=+$('price').value,ch=+$('channels').value,hr=+$('hourly').value,hs=+$('hours').value;
+  $('o-creators').textContent=fmt(n);$('o-price').textContent=p+' $';$('o-channels').textContent=ch;$('o-hourly').textContent=hr+' $';$('o-hours').textContent=hs+' saat';
+  const chUsd=ch*hs*30*hr;$('r-ch').textContent=fmt(chUsd)+' $ / ay';
+  if(model==='sub'){const lic=n*p;$('r-lic-label').textContent='Abonelik ('+fmt(n)+' × '+p+' $)';$('r-lic').textContent=fmt(lic)+' $ / ay';
+    $('r-label').textContent='Aylık brüt gelir';$('r-total').textContent=fmt(lic+chUsd)+' $';
+    $('r-year').textContent='Yıllık ≈ '+fmt((lic+chUsd)*12)+' $ · ≈ '+fmt((lic+chUsd)*12*FX/1e6)+' milyon TL';}
+  else{const lic=n*499;$('r-lic-label').textContent='Tek seferlik ('+fmt(n)+' × 499 TL)';$('r-lic').textContent=fmt(lic)+' TL';
+    $('r-label').textContent='Lisans (tek sefer) + 1 ay kanal geliri';$('r-total').textContent=fmt(lic/FX+chUsd)+' $';$('r-year').textContent='';}}
+['creators','price','channels','hourly','hours'].forEach(id=>$(id).addEventListener('input',calc));
+function setModel(m){model=m;$('mSub').setAttribute('aria-pressed',m==='sub');$('mOne').setAttribute('aria-pressed',m==='one');$('f-price').hidden=m!=='sub';calc();}
+$('mSub').onclick=()=>setModel('sub');$('mOne').onclick=()=>setModel('one');
+calc();
+
+fromHash();
+document.fonts&&document.fonts.ready.then(refit);
+requestAnimationFrame(loop);
+})();
+</script>
