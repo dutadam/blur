@@ -1,4 +1,4 @@
-<title>Halay Ekonomisi</title>
+<title>TikTok İnteraktif Oyunlar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
@@ -232,6 +232,13 @@ input[type=range]{width:100%;accent-color:var(--lamp)}
 .rows div{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding-bottom:8px;font-size:14px}
 .rows div span:last-child{font-family:var(--mono);text-align:right}
 
+.vids.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.ladder{display:grid;gap:10px;padding:0;margin:0;align-content:start}
+.ladder li{list-style:none;display:grid;grid-template-columns:36px minmax(0,1fr);gap:14px;align-items:start;background:var(--square);border-radius:14px;padding:14px 16px}
+.ladder .num{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:rgba(244,193,82,.14);color:var(--lamp);font-weight:700}
+.ladder li:first-child .num{background:var(--lamp);color:#1A1406}
+.ladder b{display:block;font-size:16px}
+.ladder span:not(.num){color:var(--fog);font-size:14px}
 /* 13 partnership */
 .models{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
 .model{background:var(--square);border-radius:18px;padding:20px;display:grid;gap:10px;align-content:start;border:1px solid transparent}
@@ -281,9 +288,10 @@ input[type=range]{width:100%;accent-color:var(--lamp)}
   .models,.gaps{grid-template-columns:minmax(0,1fr)}
 }
 @media (max-width:640px){
-  .brand{font-size:16px}
+  .brand{font-size:14px}
+  .top-in{gap:12px}
   .flow,.assets,.risklist,.split{grid-template-columns:minmax(0,1fr)}
-  .vids{grid-template-columns:minmax(0,1fr)}
+  .vids,.vids.three{grid-template-columns:minmax(0,1fr)}
   .vids:not(.one) .vcard figcaption p{display:block}
   .sim.phoney{grid-template-columns:minmax(0,1fr);justify-items:center}
   .plan{grid-template-columns:minmax(0,1fr);gap:22px}.plan::before{display:none}
@@ -294,10 +302,10 @@ input[type=range]{width:100%;accent-color:var(--lamp)}
 </style>
 
 <header class="top"><div class="top-in">
-  <a class="brand" href="#kapak">Halay <em>Ekonomisi</em></a>
+  <a class="brand" href="#kapak">TikTok <em>İnteraktif Oyunlar</em></a>
   <nav class="links" aria-label="Bölümler">
-    <a href="#nasil">Nasıl çalışır</a><a href="#pazar">Pazar</a><a href="#neden-siz">Neden siz</a><a href="#demo">Demo</a><a href="#halay">Formatlar</a>
-    <a href="#rakipler">Rakipler</a><a href="#gelir">Gelir</a><a href="#ortaklik">Ortaklık</a><a href="#plan">Pilot</a>
+    <a href="#nasil">Nasıl çalışır</a><a href="#pazar">Türkiye</a><a href="#dunya">Dünya</a><a href="#neden-siz">Neden siz</a><a href="#demo">Demo</a><a href="#halay">Formatlar</a>
+    <a href="#rakipler">Rakipler</a><a href="#gelir">Gelir</a><a href="#potansiyel">Potansiyel</a><a href="#ortaklik">Ortaklık</a><a href="#plan">Pilot</a>
   </nav></div><div class="progress" id="progress"></div></header>
 <main id="deck">
 
@@ -305,9 +313,9 @@ input[type=range]{width:100%;accent-color:var(--lamp)}
 <section class="slide" id="kapak" data-title="Kapak">
   <div class="in"><div class="cover">
     <div>
-      <div class="eyebrow rv">TikTok LIVE interaktif oyunlar · Türkiye · Kasım 2026</div>
-      <h1 class="rv" style="--i:1;margin-top:16px">İzleyici izlemiyor, <em>halaya katılıyor.</em></h1>
-      <p class="lead rv" style="--i:2">Canlı yayın ekranında, izleyicinin yorum ve hediyeleriyle oynanan oyunlar Türkiye'de hızla büyüyen yeni bir oyun pazarı. Bu pazarı en hızlı kazanacak ekip, mobil oyun yapmayı zaten bilen ekip.</p>
+      <div class="eyebrow rv">TikTok LIVE interaktif oyunlar · Türkiye ve dünya · Kasım 2026</div>
+      <h1 class="rv" style="--i:1;margin-top:16px">İzleyici izlemiyor, <em>oyunu oynuyor.</em></h1>
+      <p class="lead rv" style="--i:2">Canlı yayın ekranında, izleyicinin yorum ve hediyeleriyle oynanan oyunlar dünyada ve Türkiye'de hızla büyüyen yeni bir oyun pazarı. Bu pazarı en hızlı kazanacak ekip, mobil oyun yapmayı zaten bilen ekip.</p>
       <div class="cta rv" style="--i:3"><a class="main" href="#demo">Demoyu oyna ↓</a><a href="#halay">Gerçek videolar</a></div>
     </div>
     <div class="phone rv" style="--i:2" aria-label="Temsili interaktif halay yayını">
@@ -336,7 +344,7 @@ input[type=range]{width:100%;accent-color:var(--lamp)}
 <!-- 2 -->
 <section class="slide" id="pazar" data-title="Pazar">
   <div class="in">
-    <div class="head rv"><div class="eyebrow">Pazar</div><h2>Türkiye canlı yayın ekonomisi <em>2030'a kadar 3 katına</em> çıkıyor</h2></div>
+    <div class="head rv"><div class="eyebrow">Türkiye pazarı</div><h2>Türkiye canlı yayın ekonomisi <em>2030'a kadar 3 katına</em> çıkıyor</h2></div>
     <div class="market">
       <div class="bigs">
         <div class="big rv" style="--i:1"><b class="num">10,2 M</b><span>kişi Türkiye'de her hafta canlı yayın izliyor</span><small>TikTok / Kearney</small></div>
@@ -350,6 +358,38 @@ input[type=range]{width:100%;accent-color:var(--lamp)}
         <div class="note">2030 değeri tahmin (taralı). Kaynak: TikTok / Kearney, Forbes Türkiye.</div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- dunya -->
+<section class="slide" id="dunya" data-title="Dünyada">
+  <div class="in">
+    <div class="head"><div class="eyebrow">Dünyada</div><h2>Türkiye, <em>küresel bir dalganın</em> parçası</h2>
+      <p>Hediyeli canlı yayın dünyada her yıl büyüyor. Etrafında oyun ve araç satan şirketler oluştu; çoğu küçük ve yeni.</p></div>
+    <div class="market">
+      <div class="bigs">
+        <div class="big"><b class="num">10 Mrd $+</b><span>TikTok'ta kullanıcıların toplam harcaması. Bu eşiği geçen ilk oyun dışı uygulama; harcamanın büyük kısmı hediye coin'leri.</span><small>data.ai · Aralık 2023</small></div>
+        <div class="big"><b class="num">60.000+</b><span>ABD'li LIVE yayıncısı hediyelerden yarı zamanlı medyan gelirin üstünde kazanıyor.</span><small>Ipsos · TikTok · 2025</small></div>
+        <div class="big"><b class="num">2,9 M</b><span>yayıncı TikFinity etkileşim aracına kaydoldu. En büyük pazarlar Endonezya, Tayland, Brezilya, Meksika.</span><small>Şirket beyanı · 2026</small></div>
+      </div>
+      <div class="bars" role="img" aria-label="Dünyada TikTok hediyelerine harcanan para: 2022'de yaklaşık 3,7 milyar dolar, 2023'te yaklaşık 6,5 milyar dolar">
+        <h3>Dünyada TikTok hediyelerine harcanan para, milyar $</h3>
+        <div class="brow"><span class="yr">2022</span><div class="track"><div class="fill" style="width:57%">3,7</div></div></div>
+        <div class="brow"><span class="yr">2023</span><div class="track"><div class="fill" style="width:100%">6,5</div></div></div>
+        <div class="axis num"><span>0</span><span>3,25</span><span>6,5</span></div>
+        <div class="note">Bir yılda yaklaşık %75 büyüme. FXC Intelligence tahmini: TikTok Avrupa verisinden dünyaya ölçeklenmiş, düşük senaryo.</div>
+      </div>
+    </div>
+    <div class="tablebox"><table class="comp">
+      <thead><tr><th>Global oyuncu</th><th>Ne yapıyor</th><th>Fiyat / ölçek</th></tr></thead>
+      <tbody>
+        <tr><td>Crowd Control</td><td>Hediye ve beğeniler 250+ PC oyununda karaktere etki ediyor</td><td class="num">Ücretsiz · 7,99–19,99 $ / ay</td></tr>
+        <tr><td>TikFinity</td><td>Sesli uyarı, yazıdan sese, ekrana mini oyun</td><td>2,9 M kayıtlı yayıncı (beyan)</td></tr>
+        <tr><td>EarnOnLIVE · Livecade · Devign</td><td>İndirilebilir hazır LIVE oyunları; bazıları telefondan çalışıyor</td><td>Oyun başı ya da üyelik</td></tr>
+        <tr><td>itch.io mağazaları</td><td>Ülke yarışı, bayrak savaşı gibi tek oyunlar</td><td>Tek seferlik satış</td></tr>
+      </tbody></table></div>
+    <div class="col"><div class="side real"><span class="dot"></span><span class="eyebrow">Global örnekler</span></div>
+      <div class="vids three">{{video:7PS1uC3_q_M}}{{video:-ovd1mWqNco}}{{video:HHFPEurrUr8}}</div></div>
   </div>
 </section>
 
@@ -481,7 +521,7 @@ input[type=range]{width:100%;accent-color:var(--lamp)}
 <!-- 11 -->
 <section class="slide" id="rakipler" data-title="Rakipler">
   <div class="in">
-    <div class="head rv"><div class="eyebrow">Rakipler</div><h2>Birkaç küçük firma var, <em>lider yok</em></h2>
+    <div class="head rv"><div class="eyebrow">Türkiye'deki rakipler</div><h2>Birkaç küçük firma var, <em>lider yok</em></h2>
       <p>Yayıncılar oyuna para ödemeye alışık. Ama ortada stüdyo kalitesinde üretim yapan kimse yok.</p></div>
     <div class="tablebox rv" style="--i:1"><table class="comp">
       <thead><tr><th>Firma</th><th>Fiyat</th><th>Öne çıkan</th><th>Ne gerekiyor</th></tr></thead>
@@ -531,6 +571,33 @@ input[type=range]{width:100%;accent-color:var(--lamp)}
         </div>
         <p class="note">Varsayımdır. Kur: 1 $ = <span id="fx"></span> TL.</p>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- potansiyel -->
+<section class="slide" id="potansiyel" data-title="Potansiyel">
+  <div class="in">
+    <div class="head"><div class="eyebrow">Potansiyel</div><h2>Türkiye'de başla, <em>dünyaya sat</em></h2>
+      <p>Aynı oyun, dili ve teması değişerek başka pazara gider. Model, etkileşim aracı kullanan yayıncıların küçük bir kısmının lisans ödediğini varsayıyor.</p></div>
+    <div class="calc">
+      <div>
+        <div class="field"><label for="pShare">Lisans ödeyen yayıncı oranı <output id="o-pShare" class="num"></output></label>
+          <input type="range" id="pShare" min="0.1" max="2" step="0.1" value="0.5"><div class="help">Taban: TikFinity'ye kayıtlı 2,9 milyon yayıncı, LIVE araçlarına ilgi için bir gösterge.</div></div>
+        <div class="field"><label for="pPrice">Aylık lisans fiyatı <output id="o-pPrice" class="num"></output></label>
+          <input type="range" id="pPrice" min="5" max="40" step="1" value="20"></div>
+        <div class="result" style="margin-top:6px">
+          <div><div class="eyebrow">Yıllık lisans geliri</div><div class="bigval num" id="p-total"></div><div class="sub" id="p-sub"></div></div>
+          <div class="rows" id="p-rows"></div>
+          <p class="note">Hipotezdir. Kayıtlı yayıncının hepsi aktif değil; oran pilotta ölçülecek.</p>
+        </div>
+      </div>
+      <ol class="ladder">
+        <li><span class="num">1</span><div><b>Türkiye</b><span>Kültürel formatlar: halay, memleket, düğün. Test ve ilk gelir.</span></div></li>
+        <li><span class="num">2</span><div><b>Azerbaycan ve Orta Asya</b><span>Dil ve kültür yakın; aynı oyunlar küçük çeviriyle çalışır.</span></div></li>
+        <li><span class="num">3</span><div><b>Arapça konuşan pazarlar</b><span>Hediye harcaması yüksek, yerel LIVE oyunu neredeyse yok.</span></div></li>
+        <li><span class="num">4</span><div><b>Endonezya, Tayland, Brezilya, Meksika</b><span>LIVE araçlarının en çok kullanıldığı pazarlar; ülke yarışı gibi evrensel formatlar.</span></div></li>
+      </ol>
     </div>
   </div>
 </section>
@@ -599,6 +666,10 @@ input[type=range]{width:100%;accent-color:var(--lamp)}
     <li><a href="https://www.gzt.com/hayat/tiktok-halay-yayinlari-horon-akimi-neden-izleniyor-ne-kadar-kazandiriyor-4276953" target="_blank" rel="noopener">GZT: halay ve horon yayınları</a></li>
     <li><a href="https://www.cnbce.com/teknoloji/tiktokta-yeni-akim-halay-ve-horon-cektirerek-para-kazaniyorlar-h41380" target="_blank" rel="noopener">CNBC-e: halay ve horon yayınları</a></li>
     <li><a href="https://dotesports.com/general/news/tiktok-live-streaming-market-share" target="_blank" rel="noopener">Dot Esports: TikTok LIVE Q2 2026</a></li>
+    <li><a href="https://techcrunch.com/2023/12/11/tiktok-becomes-first-non-game-app-to-reach-10b-in-consumer-spending/" target="_blank" rel="noopener">TechCrunch: TikTok 10 milyar $ harcama (data.ai)</a></li>
+    <li><a href="https://fxcintel.com/research/reports/ct-tiktok-gifting-flows" target="_blank" rel="noopener">FXC Intelligence: TikTok hediye akışları</a></li>
+    <li><a href="https://www.tubefilter.com/2025/12/02/tiktok-live-ipsos-virtual-gifting-data-study/" target="_blank" rel="noopener">Tubefilter: Ipsos / TikTok LIVE hediye çalışması</a></li>
+    <li><a href="https://www.trendingtopics.eu/streamtv-tikfinity-tiktok-live/" target="_blank" rel="noopener">Trending Topics: TikFinity</a> · <a href="https://crowdcontrol.live/tiktok" target="_blank" rel="noopener">Crowd Control</a></li>
     <li><a href="https://ttcalculator.net/learn/tiktok-coin-value-usd/" target="_blank" rel="noopener">TT Calculator: coin değeri</a></li>
     <li><a href="https://streamer.guide/guides/tiktok-live-rules" target="_blank" rel="noopener">Streamer Guide: LIVE kuralları 2026</a></li>
     <li><a href="https://tikqo.com/" target="_blank" rel="noopener">TikQo</a> · <a href="https://cagigames.com/" target="_blank" rel="noopener">CagiGames</a> · <a href="https://tikmax.tr/" target="_blank" rel="noopener">TikMax</a> · <a href="https://giftarena.aykutbilisim.com/" target="_blank" rel="noopener">GiftArena</a></li>
@@ -803,6 +874,20 @@ function calc(){const n=+$('creators').value,p=+$('price').value,ch=+$('channels
 function setModel(m){model=m;$('mSub').setAttribute('aria-pressed',m==='sub');$('mOne').setAttribute('aria-pressed',m==='one');$('f-price').hidden=m!=='sub';calc();}
 $('mSub').onclick=()=>setModel('sub');$('mOne').onclick=()=>setModel('one');
 calc();
+
+/* ================= global potential ================= */
+const BASE=2.9e6;
+function pot(){const sh=+$('pShare').value,pr=+$('pPrice').value;
+  $('o-pShare').textContent='%'+sh.toLocaleString('tr-TR');$('o-pPrice').textContent=pr+' $';
+  const n=BASE*sh/100,y=n*pr*12;
+  $('p-total').textContent=(y/1e6).toLocaleString('tr-TR',{maximumFractionDigits:1})+' M $';
+  $('p-sub').textContent=fmt(n)+' ödeyen yayıncı · ≈ '+(y*FX/1e6).toLocaleString('tr-TR',{maximumFractionDigits:0})+' milyon TL';
+  $('p-rows').innerHTML='';
+  [['Temkinli',0.2],['Orta',0.5],['İddialı',1]].forEach(([k,v])=>{const d=document.createElement('div');
+    d.innerHTML='<span></span><span></span>';d.firstChild.textContent=k+' (%'+v.toLocaleString('tr-TR')+')';
+    d.lastChild.textContent=(BASE*v/100*pr*12/1e6).toLocaleString('tr-TR',{maximumFractionDigits:1})+' M $ / yıl';$('p-rows').append(d);});}
+['pShare','pPrice'].forEach(id=>$(id).addEventListener('input',pot));
+pot();
 
 refit();onScroll();
 document.fonts&&document.fonts.ready.then(refit);

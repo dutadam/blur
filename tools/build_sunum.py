@@ -31,6 +31,12 @@ VIDEOS = {
                     "Yorum ve hediyeyle ülkesine destek veren izleyiciler, sahaya bayrak küpleri yağdırıyor."),
     "n_uIgYamciQ": ("Düğün Konvoyu: izleyici arabasıyla katılıyor", "TikQo",
                     "Hediye gönderen izleyicinin arabası konvoya giriyor; büyük hediye öne geçiriyor."),
+    "7PS1uC3_q_M": ("Drop Zone Dash: gül sola, GG sağa", "Harry's TT Interactive",
+                    "İzleyicinin hediyesi kuryeyi yönlendiriyor; tek ekranlık, hızlı turlu bir oyun."),
+    "-ovd1mWqNco": ("River Race Survival: nehirde hayatta kal", "TikTokBox",
+                    "Her izleyici bir yüzücü; hediyeyle hızlanıyor, kenara çarpan eleniyor."),
+    "HHFPEurrUr8": ("Crowd Control: TikTok LIVE özellikleri", "Crowd Control",
+                    "Hediye ve beğeniler 250'den fazla oyunda karaktere etki ediyor: ateş yak, ejderha çağır."),
 }
 
 

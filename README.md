@@ -1,4 +1,4 @@
-# Halay Ekonomisi
+# TikTok İnteraktif Oyunlar
 
 TikTok LIVE interaktif oyunlarının Türkiye fırsatını anlatan tek sayfalık interaktif site.
 
@@ -13,7 +13,7 @@ TikTok LIVE interaktif oyunlarının Türkiye fırsatını anlatan tek sayfalık
 ## Mobil oyun şirketi sürümü
 https://claude.ai/artifact/9Jvv4famfe3LiaB79QgWnx
 
-- Tek sayfa, üstte yapışkan menü (Nasıl çalışır, Pazar, Neden siz, Demo, Formatlar, Rakipler, Gelir, Ortaklık, Pilot). Her bölümün adresi var (`#demo`, `#gelir`…).
+- Tek sayfa, üstte yapışkan menü (Nasıl çalışır, Türkiye, Dünya, Neden siz, Demo, Formatlar, Rakipler, Gelir, Potansiyel, Ortaklık, Pilot). Her bölümün adresi var (`#demo`, `#gelir`…).
 - Video karelerine tıklayınca büyür; ← → ile gezilir, Esc kapatır.
 - Video eklemek: görselleri `https://i.ytimg.com/vi/ID/{maxresdefault,hq1,hq2,hq3}.jpg` adresinden indirip `assets/yt/` altına koy, `tools/build_sunum.py` içindeki `VIDEOS` sözlüğüne ekle, kaynağa `{{video:ID}}` yaz ve build'i çalıştır.
 - Aynı linki korumak için: "halay-sunum.html dosyasını https://claude.ai/artifact/9Jvv4famfe3LiaB79QgWnx artifact'ına yayınla"
