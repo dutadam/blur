@@ -1,9 +1,9 @@
-<title>Halay Ekonomisi Sunumu</title>
+<title>Halay Ekonomisi</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
 <style>
-/* Layout: one slide per screen, a night village square. Slides change sideways; the bottom bar is the stage manager. Single dark look by design. */
+/* Layout: a night village square. Sticky top bar, then one long scroll of bands: thesis + live phone, market, why-you, demo, four formats with real videos, money, plan. Single dark look by design. */
 :root{
   --night:#0E1424;      /* sky, slide ground */
   --square:#161E33;     /* meydan ground, cards */
@@ -18,13 +18,13 @@
   --display:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;
   --body:"Figtree","Helvetica Neue","Segoe UI",system-ui,sans-serif;
   --mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
-  --navh:58px;
+  --toph:56px;
   color-scheme:dark;
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-html,body{height:100%}
-body{background:var(--night);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;overflow:hidden}
+html{scroll-behavior:smooth}
+body{background:var(--night);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
 a{color:var(--lamp)}
 :focus-visible{outline:2px solid var(--lamp);outline-offset:2px;border-radius:4px}
 h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0}
@@ -34,46 +34,37 @@ p{margin:0}
 .num{font-family:var(--mono);font-variant-numeric:tabular-nums}
 .note{font-size:12px;color:var(--dim)}
 
-/* deck */
-.deck{position:relative;height:100%;overflow:hidden}
-.slide{position:absolute;inset:0 0 var(--navh) 0;overflow-y:auto;overflow-x:hidden;
-  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px;
-  visibility:hidden;opacity:0;transform:translateX(calc(var(--dir,1) * 48px));transition:opacity .45s ease,transform .55s cubic-bezier(.2,.7,.2,1),visibility 0s .55s}
-.slide.on{visibility:visible;opacity:1;transform:none;transition:opacity .45s ease,transform .55s cubic-bezier(.2,.7,.2,1),visibility 0s}
-.slide.past{--dir:-1}
-.in{max-width:1200px;margin:0 auto;min-height:100%;display:grid;align-content:center;gap:24px}
-.slide.on .rv{animation:rise .6s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0) * 80ms + 120ms)}
+/* top bar */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--night)}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:8;background:var(--night);border-bottom:1px solid var(--line);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.top-in{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:20px;height:var(--toph)}
+.brand{font:800 18px var(--display);color:var(--ink);text-decoration:none;white-space:nowrap}
+.brand em{font-style:normal;color:var(--lamp)}
+.links{flex:1;min-width:0;display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;justify-content:flex-end}
+.links::-webkit-scrollbar{display:none}
+.links a{flex:none;color:var(--fog);text-decoration:none;font:600 13px var(--body);padding:7px 10px;border-radius:8px}
+.links a:hover{color:var(--ink)}
+.links a[aria-current=true]{color:#1A1406;background:var(--lamp)}
+.progress{position:absolute;left:0;bottom:-1px;height:2px;width:0;background:var(--lamp)}
+
+/* bands */
+.slide{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:clamp(56px,8vw,96px);border-top:1px solid var(--line);scroll-margin-top:var(--toph)}
+#kapak{border-top:0;padding-block:clamp(36px,5vw,64px)}
+.in{max-width:1200px;margin:0 auto;display:grid;gap:28px}
+#kapak .rv{animation:rise .7s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0) * 90ms)}
 @keyframes rise{from{opacity:0;transform:translateY(16px)}}
 .head{display:grid;gap:10px;max-width:68ch}
 .head h2{font-size:clamp(28px,4.2vw,52px);font-weight:800;line-height:1.04;letter-spacing:-.01em}
 .head h2 em{font-style:normal;color:var(--lamp)}
 .head p{font-size:clamp(15px,1.5vw,18px);color:var(--fog);max-width:60ch}
-.slide-no{position:absolute;top:22px;right:max(16px,env(safe-area-inset-right,0px));font:500 11px var(--mono);color:var(--dim);letter-spacing:.1em}
-
-/* bottom bar */
-.bar{position:absolute;left:0;right:0;bottom:0;height:var(--navh);display:flex;align-items:center;gap:8px;
-  padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px));
-  background:var(--night);border-top:1px solid var(--line);z-index:5}
-.progress{position:absolute;left:0;top:-1px;height:2px;background:var(--lamp);transition:width .4s ease}
 .nb{appearance:none;border:1px solid var(--line);background:var(--square);color:var(--ink);font:600 13px var(--body);height:38px;min-width:38px;padding:0 12px;border-radius:10px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
 .nb:hover{border-color:var(--lamp)}
-.nb[aria-pressed=true]{background:var(--lamp);color:#1A1406;border-color:var(--lamp)}
-.where{flex:1;min-width:0;display:flex;align-items:baseline;gap:10px;justify-content:center}
-.where .num{color:var(--lamp);font-size:13px}
-.where span:last-child{font-size:13px;color:var(--fog);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.kbd{font:500 11px var(--mono);color:var(--dim)}
+.foot{padding-block:28px 48px;border-top:1px solid var(--line);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.foot .in{font-size:12px;color:var(--dim)}
 
-/* notes + overview + lightbox */
-.notes{position:absolute;left:max(16px,env(safe-area-inset-left,0px));right:max(16px,env(safe-area-inset-right,0px));bottom:calc(var(--navh) + 12px);max-width:720px;margin:0 auto;
-  background:var(--square);border:1px solid var(--line);border-radius:14px;padding:14px 16px;font-size:15px;z-index:6;box-shadow:0 20px 60px -20px #000}
-.notes b{display:block;font:500 11px var(--mono);letter-spacing:.1em;color:var(--lamp);text-transform:uppercase;margin-bottom:4px}
-.overview{position:absolute;inset:0 0 var(--navh) 0;background:var(--night);z-index:7;overflow-y:auto;
-  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px}
-.ov-grid{max-width:1200px;margin:16px auto 0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-.ov-grid button{appearance:none;text-align:left;border:1px solid var(--line);background:var(--square);color:var(--ink);border-radius:14px;padding:14px;cursor:pointer;display:grid;gap:6px;min-height:92px;align-content:start;font:600 15px/1.25 var(--body)}
-.ov-grid button:hover{border-color:var(--lamp)}
-.ov-grid button[aria-current=true]{border-color:var(--lamp);background:rgba(244,193,82,.1)}
-.ov-grid .num{font-size:11px;color:var(--lamp)}
+/* lightbox */
 .lb{position:fixed;inset:0;z-index:20;background:var(--shade);backdrop-filter:blur(6px);display:grid;place-items:center;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px}
 .lb-box{width:min(960px,100%);display:grid;gap:12px}
@@ -93,10 +84,10 @@ p{margin:0}
 .cover h1{font-size:clamp(42px,6.6vw,96px);font-weight:800;line-height:.95;letter-spacing:-.02em}
 .cover h1 em{font-style:normal;color:var(--lamp)}
 .cover .lead{font-size:clamp(16px,1.7vw,21px);color:var(--fog);max-width:44ch;margin-top:20px}
-.prepared{margin-top:28px;display:flex;flex-wrap:wrap;gap:8px 18px;align-items:baseline;font-size:14px;color:var(--fog)}
-.prepared .to{font-family:var(--display);font-weight:700;font-size:20px;color:var(--ink);border-bottom:1px dashed var(--line);padding:0 2px;min-width:6ch;outline-offset:4px}
-.prepared .to:empty::before{content:attr(data-ph);color:var(--dim)}
-.start-hint{margin-top:18px}
+.cta{margin-top:28px;display:flex;flex-wrap:wrap;gap:10px}
+.cta a{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font:700 15px var(--body);padding:12px 18px;border-radius:12px;border:1px solid var(--line);color:var(--ink);background:var(--square)}
+.cta a.main{background:var(--lamp);border-color:var(--lamp);color:#1A1406}
+.cta a:hover{border-color:var(--lamp)}
 .phone{position:relative;width:min(300px,72vw);aspect-ratio:9/16;max-width:100%;border-radius:38px;background:#05070D;padding:10px;box-shadow:0 30px 90px -30px rgba(244,193,82,.4)}
 .phone.sm{width:min(250px,62vw)}
 .screen{position:relative;width:100%;height:100%;border-radius:30px;overflow:hidden;background:var(--night)}
@@ -124,7 +115,6 @@ p{margin:0}
 .track{position:relative;height:46px;border-radius:10px;background:var(--night);overflow:hidden}
 .fill{position:absolute;inset:0 auto 0 0;border-radius:10px;background:var(--lamp);display:flex;align-items:center;justify-content:flex-end;padding-right:12px;font:800 16px var(--display);color:#1A1406;transform-origin:left;transition:transform 1s cubic-bezier(.2,.7,.2,1)}
 .fill.est{background:repeating-linear-gradient(135deg,var(--lamp) 0 10px,#E2AE3E 10px 20px)}
-.slide:not(.on) .fill{transform:scaleX(.05)}
 .axis{display:flex;justify-content:space-between;font:500 11px var(--mono);color:var(--dim);padding-left:56px}
 
 /* 3 why you */
@@ -289,37 +279,36 @@ input[type=range]{width:100%;accent-color:var(--lamp)}
   .demo .phone{justify-self:center}
   .assets,.flow{grid-template-columns:1fr 1fr}
   .models,.gaps{grid-template-columns:minmax(0,1fr)}
-  .ov-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
-  .in{align-content:start}
 }
 @media (max-width:640px){
-  .slide{padding-block:20px 28px}
+  .brand{font-size:16px}
   .flow,.assets,.risklist,.split{grid-template-columns:minmax(0,1fr)}
   .vids{grid-template-columns:minmax(0,1fr)}
   .vids:not(.one) .vcard figcaption p{display:block}
   .sim.phoney{grid-template-columns:minmax(0,1fr);justify-items:center}
   .plan{grid-template-columns:minmax(0,1fr);gap:22px}.plan::before{display:none}
   .meter{grid-template-columns:1fr 1fr}
-  .ov-grid{grid-template-columns:1fr 1fr}
   .sources{columns:1}
-  .kbd,.nb .lbl{display:none}
-  .where span:last-child{display:none}
-  .slide-no{display:none}
 }
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
 </style>
 
-<div class="deck" id="deck">
+<header class="top"><div class="top-in">
+  <a class="brand" href="#kapak">Halay <em>Ekonomisi</em></a>
+  <nav class="links" aria-label="Bölümler">
+    <a href="#pazar">Pazar</a><a href="#neden-siz">Neden siz</a><a href="#demo">Demo</a><a href="#halay">Formatlar</a>
+    <a href="#rakipler">Rakipler</a><a href="#gelir">Gelir</a><a href="#ortaklik">Ortaklık</a><a href="#plan">Pilot</a>
+  </nav></div><div class="progress" id="progress"></div></header>
+<main id="deck">
 
 <!-- 1 -->
-<section class="slide" id="kapak" data-title="Kapak" data-notes="Açılış cümlesi: TikTok'ta izleyici artık sadece izlemiyor, ekrandaki oyunu yönetiyor. Sağdaki telefonda gerçek zamanlı çalışan bir canlandırma var; sonraki slaytlarda bunu siz oynatacaksınız.">
+<section class="slide" id="kapak" data-title="Kapak">
   <div class="in"><div class="cover">
     <div>
       <div class="eyebrow rv">TikTok LIVE interaktif oyunlar · Türkiye · Kasım 2026</div>
       <h1 class="rv" style="--i:1;margin-top:16px">İzleyici izlemiyor, <em>halaya katılıyor.</em></h1>
       <p class="lead rv" style="--i:2">Canlı yayın ekranında, izleyicinin yorum ve hediyeleriyle oynanan oyunlar Türkiye'de hızla büyüyen yeni bir oyun pazarı. Bu pazarı en hızlı kazanacak ekip, mobil oyun yapmayı zaten bilen ekip.</p>
-      <div class="prepared rv" style="--i:3"><span>Sunulan:</span><span class="to" id="client" contenteditable="true" spellcheck="false" role="textbox" aria-label="Sunulan şirketin adı" data-ph="Stüdyonuzun adı"></span><span class="note">tıkla, şirket adını yaz</span></div>
-      <p class="note start-hint rv" style="--i:4">→ tuşu, kaydırma ya da alttaki oklarla ilerleyin · N konuşmacı notu · O tüm slaytlar</p>
+      <div class="cta rv" style="--i:3"><a class="main" href="#demo">Demoyu oyna ↓</a><a href="#halay">Gerçek videolar</a></div>
     </div>
     <div class="phone rv" style="--i:2" aria-label="Temsili interaktif halay yayını">
       <div class="screen"><canvas id="halayCover"></canvas>
@@ -329,7 +318,7 @@ input[type=range]{width:100%;accent-color:var(--lamp)}
 </section>
 
 <!-- 2 -->
-<section class="slide" id="pazar" data-title="Pazar" data-notes="Kearney'nin TikTok için yaptığı çalışma: Türkiye canlı yayın ekonomisi 2030'a kadar üç katından fazla büyüyor. Haftada 10 milyon kişi izliyor. Tek bir hediyeli yayında 65 bin eş zamanlı izleyici gördük.">
+<section class="slide" id="pazar" data-title="Pazar">
   <div class="in">
     <div class="head rv"><div class="eyebrow">Pazar</div><h2>Türkiye canlı yayın ekonomisi <em>2030'a kadar 3 katına</em> çıkıyor</h2></div>
     <div class="market">
@@ -349,7 +338,7 @@ input[type=range]{width:100%;accent-color:var(--lamp)}
 </section>
 
 <!-- 3 -->
-<section class="slide" id="neden-siz" data-title="Neden mobil oyun stüdyosu?" data-notes="Bu slayt sunumun kalbi. LIVE oyunu teknik olarak bir hyper-casual oyuna çok benziyor; farkı dağıtım ve gelir modelinde. Sizin ekibinizde bu oyunu yapacak her yetenek zaten var.">
+<section class="slide" id="neden-siz" data-title="Neden mobil oyun stüdyosu?">
   <div class="in">
     <div class="head rv"><div class="eyebrow">Neden siz?</div><h2>Aynı yetenek, <em>farklı bir dağıtım kanalı</em></h2>
       <p>LIVE oyunu teknik olarak kısa oturumlu bir hyper-casual oyun. Değişen şey oyuncunun nereden geldiği ve paranın nasıl aktığı.</p></div>
@@ -372,7 +361,7 @@ input[type=range]{width:100%;accent-color:var(--lamp)}
 </section>
 
 <!-- 4 -->
-<section class="slide" id="nasil" data-title="Nasıl çalışır" data-notes="Para akışını netleştir: biz hediyeden pay almıyoruz. TikTok hediyenin yaklaşık yarısını yayıncıya veriyor; bizim gelirimiz yayıncının ödediği lisans. Bu, TikTok'la gelir çatışması olmadığı anlamına geliyor.">
+<section class="slide" id="nasil" data-title="Nasıl çalışır">
   <div class="in">
     <div class="head rv"><div class="eyebrow">Nasıl çalışır</div><h2>Dört adımda bir yayın, <em>bir oyun döngüsü</em></h2></div>
     <ol class="flow">
@@ -388,7 +377,7 @@ input[type=range]{width:100%;accent-color:var(--lamp)}
 </section>
 
 <!-- 5 -->
-<section class="slide" id="demo" data-title="Canlı demo" data-notes="Odadakilere butonlara basmalarını söyle. HORON yazınca karakter halaya giriyor, Galaksi gönderince sıkıştır modu başlıyor. Sağ alttaki sayaç hediyelerden yayıncıya kalan gerçek parayı gösteriyor.">
+<section class="slide" id="demo" data-title="Canlı demo">
   <div class="in"><div class="demo">
     <div class="phone rv" aria-label="Oynanabilir halay yayını canlandırması">
       <div class="screen"><canvas id="halayDemo"></canvas>
@@ -422,14 +411,14 @@ input[type=range]{width:100%;accent-color:var(--lamp)}
 </section>
 
 <!-- 6 -->
-<section class="slide" id="halay" data-title="Format: Halay ve horon" data-notes="Halay formatı kendiliğinden bir akım olarak başladı, sonra haberlere çıktı. TikMax bunu hazır oyuna çevirdi. Kareler videonun dörtte biri, yarısı ve dörtte üçünden; tıklayınca büyüyor.">
+<section class="slide" id="halay" data-title="Format: Halay ve horon">
   <div class="in">
     <div class="head rv"><div class="eyebrow">Format 1 · Halay ve horon</div><h2>Akım önce yayında doğdu, <em>sonra oyuna döndü</em></h2></div>
     <div class="fmt-grid">
       <div class="col rv" style="--i:1"><div class="side"><span class="dot"></span><span class="eyebrow">Neden tutuyor</span></div>
         <div class="why"><p><b>Kimlik:</b> Karadeniz'den Doğu'ya herkes kendi oyununu tanıyor.</p><p><b>Görünürlük:</b> izleyicinin adı halkada, hediye verenin başında taç.</p><p><b>Toplu an:</b> Galaksi gelince tüm halka hızlanıyor; herkes aynı anı yaşıyor.</p></div>
         <div class="chips"><button class="chip ghost" type="button" data-act="join">HORON yaz</button><button class="chip" style="background:var(--kirmizi)" type="button" data-gift="parfum">Parfüm gönder</button><button class="chip" style="background:var(--purple)" type="button" data-gift="galaksi">Galaksi gönder</button></div>
-        <p class="note">Butonlar demo slaytındaki aynı yayını etkiler.</p>
+        <p class="note">Butonlar yukarıdaki demo yayınını da etkiler.</p>
       </div>
       <div class="col rv" style="--i:2"><div class="side real"><span class="dot"></span><span class="eyebrow">Gerçek videolar</span></div>
         <div class="vids">{{video:yqFDriQvloo}}{{video:1gfako9AXVo}}</div></div>
@@ -438,7 +427,7 @@ input[type=range]{width:100%;accent-color:var(--lamp)}
 </section>
 
 <!-- 7 -->
-<section class="slide" id="memleket" data-title="Format: Memleket ve 81 il" data-notes="Memleket rekabeti Türkiye'ye özgü ve çok güçlü. İnsanlar kendi şehri kazansın diye hediye gönderiyor. İki farklı firma aynı fikri farklı mekaniklerle yapmış: harita fethi ve kule.">
+<section class="slide" id="memleket" data-title="Format: Memleket ve 81 il">
   <div class="in">
     <div class="head rv"><div class="eyebrow">Format 2 · Memleket</div><h2>"Benim şehrim kazansın" <em>en güçlü hediye sebebi</em></h2></div>
     <div class="fmt-grid">
@@ -454,7 +443,7 @@ input[type=range]{width:100%;accent-color:var(--lamp)}
 </section>
 
 <!-- 8 -->
-<section class="slide" id="ulke" data-title="Format: Ülke yarışı" data-notes="Ülke yarışı dünyada en çok satan LIVE oyun türlerinden biri. Türkiye'den bakınca doğal genişleme alanı Azerbaycan ve Arapça konuşan izleyiciler.">
+<section class="slide" id="ulke" data-title="Format: Ülke yarışı">
   <div class="in">
     <div class="head rv"><div class="eyebrow">Format 3 · Ülke yarışı</div><h2>Aynı mekanik, <em>sınırların ötesinde</em></h2>
       <p>Yorumla ülke kodunu yaz ya da hediye gönder; o ülkenin koşucusu ilerler. Global ölçekte en yaygın formatlardan biri.</p></div>
@@ -468,7 +457,7 @@ input[type=range]{width:100%;accent-color:var(--lamp)}
 </section>
 
 <!-- 9 -->
-<section class="slide" id="dugun" data-title="Format: Mahalle ve düğün" data-notes="Statü oyunları: izleyici desteklendikçe evi büyüyor ya da arabası konvoyda öne geçiyor. Bu, mobil oyunlardaki ilerleme hissinin yayına taşınmış hali.">
+<section class="slide" id="dugun" data-title="Format: Mahalle ve düğün">
   <div class="in">
     <div class="head rv"><div class="eyebrow">Format 4 · Mahalle ve düğün</div><h2>İlerleme hissi, <em>herkesin gözü önünde</em></h2>
       <p>Mobil oyunlardaki seviye atlama, burada kalabalığın içinde oluyor: gecekondudan malikâneye, konvoyun sonundan gelin arabasının yanına.</p></div>
@@ -482,7 +471,7 @@ input[type=range]{width:100%;accent-color:var(--lamp)}
 </section>
 
 <!-- 10 -->
-<section class="slide" id="telefon" data-title="Boşluk: telefondan oyun" data-notes="Rakip tablosundaki altı firmadan dördü bilgisayar istiyor. Yayıncının cebindeki cihaz telefon. Mobil-first oyun yapmak sizin uzmanlığınız; pazardaki en net boşluk burada.">
+<section class="slide" id="telefon" data-title="Boşluk: telefondan oyun">
   <div class="in"><div class="phonefirst">
     <div class="col">
       <div class="head rv"><div class="eyebrow">Pazardaki boşluk</div><h2>Yayıncının cebinde telefon var, <em>rakiplerin oyunu bilgisayar istiyor</em></h2>
@@ -490,7 +479,7 @@ input[type=range]{width:100%;accent-color:var(--lamp)}
       <div class="ratio-wrap rv" style="--i:1" role="img" aria-label="Altı rakipten dördü bilgisayar gerektiriyor">
         <div class="ratio"><i style="height:64px"></i><i style="height:64px"></i><i style="height:64px"></i><i style="height:64px"></i><i class="ok" style="height:64px"></i><i class="ok" style="height:64px"></i></div>
         <div><b class="num">4 / 6</b> <span class="muted">rakip bilgisayar gerektiriyor</span></div>
-        <p class="note">Kırmızı: PC şart. Gri: web ya da telefon. Rakipler slaytındaki tablodan.</p>
+        <p class="note">Kırmızı: PC şart. Gri: web ya da telefon. Aşağıdaki rakip tablosundan.</p>
       </div>
     </div>
     <div class="col rv" style="--i:2"><div class="side real"><span class="dot"></span><span class="eyebrow">Telefondan yayın nasıl görünüyor</span></div>
@@ -499,7 +488,7 @@ input[type=range]{width:100%;accent-color:var(--lamp)}
 </section>
 
 <!-- 11 -->
-<section class="slide" id="rakipler" data-title="Rakipler" data-notes="Yayıncılar bu oyunlara para ödemeye zaten alışık; fiyatlar 499 TL tek seferden 30 dolar aylığa kadar. Ama hiçbir oyuncu büyük değil ve hiçbiri bir oyun stüdyosu kalitesinde değil.">
+<section class="slide" id="rakipler" data-title="Rakipler">
   <div class="in">
     <div class="head rv"><div class="eyebrow">Rakipler</div><h2>Birkaç küçük firma var, <em>lider yok</em></h2>
       <p>Yayıncılar oyuna para ödemeye alışık. Ama ortada stüdyo kalitesinde üretim yapan kimse yok.</p></div>
@@ -522,7 +511,7 @@ input[type=range]{width:100%;accent-color:var(--lamp)}
 </section>
 
 <!-- 12 -->
-<section class="slide" id="gelir" data-title="Gelir hesaplayıcı" data-notes="Kaydırıcıları birlikte oynatın. Varsayılan senaryo: 300 ödeyen yayıncı, 25 dolar aylık, iki test kanalı. Rakamlar varsayımdır, pilotta ölçülecek.">
+<section class="slide" id="gelir" data-title="Gelir hesaplayıcı">
   <div class="in">
     <div class="head rv"><div class="eyebrow">Gelir hesaplayıcı</div><h2>Rakamları <em>birlikte oynatalım</em></h2>
       <p>Fiyatlar Türkiye'deki rakiplerin fiyatlarından alındı. Sonuçlar tahmindir; pilotta ölçülecek.</p></div>
@@ -556,7 +545,7 @@ input[type=range]{width:100%;accent-color:var(--lamp)}
 </section>
 
 <!-- 13 -->
-<section class="slide" id="ortaklik" data-title="Ortaklık modeli" data-notes="Üç seçenek sunuyoruz, önerimiz ortadaki: ortak stüdyo. Siz üretimi, biz pazarı ve yayıncı ilişkisini getiriyoruz. Gelir paylaşımı pilot sonuçlarına göre netleşir.">
+<section class="slide" id="ortaklik" data-title="Ortaklık modeli">
   <div class="in">
     <div class="head rv"><div class="eyebrow">Birlikte nasıl çalışırız</div><h2>Üç model, <em>önerimiz ortak stüdyo</em></h2></div>
     <div class="models">
@@ -575,7 +564,7 @@ input[type=range]{width:100%;accent-color:var(--lamp)}
 </section>
 
 <!-- 14 -->
-<section class="slide" id="plan" data-title="90 günlük pilot" data-notes="Büyük yatırım istemiyoruz. Üç adım, her adımın sonunda bir devam şartı. Şart sağlanmazsa duruyoruz ya da yön değiştiriyoruz.">
+<section class="slide" id="plan" data-title="90 günlük pilot">
   <div class="in">
     <div class="head rv"><div class="eyebrow">90 günlük pilot</div><h2>Önce küçük dene, <em>ölç, sonra büyüt</em></h2>
       <p>Her adımın sonunda bir devam şartı var. Sağlanmazsa yön değiştiririz.</p></div>
@@ -588,7 +577,7 @@ input[type=range]{width:100%;accent-color:var(--lamp)}
 </section>
 
 <!-- 15 -->
-<section class="slide" id="riskler" data-title="Riskler" data-notes="Riskleri biz söyleyelim. En büyüğü resmi bağlantı olmaması; bunu tek bir bağlantı katmanına bağımlı olmayarak yönetiyoruz.">
+<section class="slide" id="riskler" data-title="Riskler">
   <div class="in">
     <div class="head rv"><div class="eyebrow">Riskler ve önlemler</div><h2>Bilinen riskler, <em>tasarımla yönetiliyor</em></h2></div>
     <ul class="risklist">
@@ -601,7 +590,7 @@ input[type=range]{width:100%;accent-color:var(--lamp)}
 </section>
 
 <!-- 16 -->
-<section class="slide" id="kapanis" data-title="Kapanış" data-notes="Somut talep: 90 günlük pilot için küçük bir ekip. Sorular için açık.">
+<section class="slide" id="kapanis" data-title="Kapanış">
   <div class="in"><div class="close">
     <div class="col">
       <div class="eyebrow rv">Bir sonraki adım</div>
@@ -622,28 +611,12 @@ input[type=range]{width:100%;accent-color:var(--lamp)}
     <li><a href="https://ttcalculator.net/learn/tiktok-coin-value-usd/" target="_blank" rel="noopener">TT Calculator: coin değeri</a></li>
     <li><a href="https://streamer.guide/guides/tiktok-live-rules" target="_blank" rel="noopener">Streamer Guide: LIVE kuralları 2026</a></li>
     <li><a href="https://tikqo.com/" target="_blank" rel="noopener">TikQo</a> · <a href="https://cagigames.com/" target="_blank" rel="noopener">CagiGames</a> · <a href="https://tikmax.tr/" target="_blank" rel="noopener">TikMax</a> · <a href="https://giftarena.aykutbilisim.com/" target="_blank" rel="noopener">GiftArena</a></li>
-    <li>Simülasyonlar temsilidir. Şirket sayıları kendi beyanlarıdır. Gelir hesapları varsayımdır. 9 Kasım 2026.</li>
   </ul>
   </div>
 </section>
 
-<div class="overview" id="overview" hidden>
-  <div class="eyebrow" style="max-width:1200px;margin:0 auto">Tüm slaytlar · Esc ile kapat</div>
-  <div class="ov-grid" id="ovGrid"></div>
-</div>
-<div class="notes" id="notes" hidden><b>Konuşmacı notu</b><span id="notesText"></span></div>
-
-<nav class="bar" aria-label="Sunum gezintisi">
-  <div class="progress" id="progress"></div>
-  <button class="nb" id="prev" type="button" aria-label="Önceki slayt">←</button>
-  <div class="where"><span class="num" id="count">01 / 16</span><span id="stitle">Kapak</span></div>
-  <span class="kbd">← → · N · O</span>
-  <button class="nb" id="bNotes" type="button" aria-pressed="false" aria-label="Konuşmacı notları">Not</button>
-  <button class="nb" id="bOv" type="button" aria-pressed="false" aria-label="Tüm slaytlar">▦<span class="lbl"> Slaytlar</span></button>
-  <button class="nb" id="bFs" type="button" aria-label="Tam ekran">⛶</button>
-  <button class="nb" id="next" type="button" aria-label="Sonraki slayt">→</button>
-</nav>
-</div>
+</main>
+<footer class="foot"><div class="in">Simülasyonlar temsilidir. Şirket sayıları kendi beyanlarıdır. Gelir hesapları varsayımdır. 9 Kasım 2026.</div></footer>
 
 <div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-label="Video karesi">
   <div class="lb-box">
@@ -671,55 +644,18 @@ function fit(cv){const r=cv.getBoundingClientRect(),d=Math.min(devicePixelRatio|
   cv.width=Math.max(1,Math.round(r.width*d));cv.height=Math.max(1,Math.round(r.height*d));
   const x=cv.getContext('2d');x.setTransform(d,0,0,d,0,0);return {x,w:r.width,h:r.height,cv};}
 
-/* ================= deck ================= */
-const slides=[...document.querySelectorAll('.slide')];
-let cur=0;
-const pad=n=>String(n).padStart(2,'0');
-const ovGrid=$('ovGrid');
-slides.forEach((s,i)=>{const b=document.createElement('button');b.type='button';
-  b.innerHTML='<span class="num"></span><span></span>';b.firstChild.textContent=pad(i+1);b.lastChild.textContent=s.dataset.title;
-  b.onclick=()=>{toggleOv(false);go(i);};ovGrid.append(b);
-  const no=document.createElement('div');no.className='slide-no';no.textContent=pad(i+1)+' / '+pad(slides.length);s.append(no);});
-function go(i,fromHash){i=Math.max(0,Math.min(slides.length-1,i));
-  slides.forEach((s,k)=>{s.classList.toggle('on',k===i);s.classList.toggle('past',k<i);s.setAttribute('aria-hidden',k!==i);s.inert=k!==i;});
-  cur=i;const s=slides[i];s.scrollTop=0;s.scrollLeft=0;deckEl.scrollLeft=0;deckEl.scrollTop=0;
-  $('count').textContent=pad(i+1)+' / '+pad(slides.length);$('stitle').textContent=s.dataset.title;
-  $('progress').style.width=((i+1)/slides.length*100)+'%';$('notesText').textContent=s.dataset.notes||'';
-  [...ovGrid.children].forEach((b,k)=>b.setAttribute('aria-current',k===i));
-  $('prev').disabled=i===0;$('next').disabled=i===slides.length-1;
-  if(!fromHash&&location.hash!=='#'+s.id){try{history.replaceState(null,'','#'+s.id);}catch(e){location.hash=s.id;}}
-  requestAnimationFrame(refit);}
-const next=()=>go(cur+1),prev=()=>go(cur-1);
-/* hash jumps scroll the clipped deck toward the target; keep it pinned */
-const deckEl=$('deck');deckEl.addEventListener('scroll',()=>{deckEl.scrollLeft=0;deckEl.scrollTop=0;});
-$('next').onclick=next;$('prev').onclick=prev;
-function toggleOv(v){const o=$('overview');o.hidden=v===undefined?!o.hidden:!v;$('bOv').setAttribute('aria-pressed',!o.hidden);}
-function toggleNotes(){const n=$('notes');n.hidden=!n.hidden;$('bNotes').setAttribute('aria-pressed',!n.hidden);}
-$('bOv').onclick=()=>toggleOv();$('bNotes').onclick=toggleNotes;
-$('bFs').onclick=()=>{try{const d=document;if(d.fullscreenElement)d.exitFullscreen();else{const p=d.documentElement.requestFullscreen?.();p&&p.catch&&p.catch(()=>{});}}catch(e){}};
-const fromHash=()=>{const k=slides.findIndex(s=>'#'+s.id===location.hash);go(k<0?0:k,true);};
-addEventListener('hashchange',fromHash);
-addEventListener('keydown',e=>{
-  if(!$('lb').hidden){if(e.key==='Escape')closeLb();else if(e.key==='ArrowRight')lbStep(1);else if(e.key==='ArrowLeft')lbStep(-1);return;}
-  const t=e.target;if(t.isContentEditable||/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))return;
-  if(e.metaKey||e.ctrlKey||e.altKey)return;
-  const k=e.key;
-  if(k==='Escape'){toggleOv(false);return;}
-  if(k==='ArrowRight'||k==='PageDown'||(k===' '&&!e.shiftKey)){e.preventDefault();next();}
-  else if(k==='ArrowLeft'||k==='PageUp'||(k===' '&&e.shiftKey)){e.preventDefault();prev();}
-  else if(k==='Home'){go(0);}else if(k==='End'){go(slides.length-1);}
-  else if(k==='n'||k==='N'){toggleNotes();}else if(k==='o'||k==='O'){toggleOv();}
-  else if(k==='f'||k==='F'){$('bFs').click();}});
-let tx=null,ty=0;
-$('deck').addEventListener('touchstart',e=>{if(e.target.closest('canvas,input,.tablebox,.frames,[contenteditable]')){tx=null;return;}tx=e.touches[0].clientX;ty=e.touches[0].clientY;},{passive:true});
-$('deck').addEventListener('touchend',e=>{if(tx===null)return;const dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;tx=null;
-  if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.6){dx<0?next():prev();}},{passive:true});
-
-/* client name, remembered per viewer */
-const cl=$('client');
-try{const v=localStorage.getItem('halay-client');if(v)cl.textContent=v;}catch(e){}
-cl.addEventListener('input',()=>{try{localStorage.setItem('halay-client',cl.textContent.trim());}catch(e){}});
-cl.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();cl.blur();}});
+/* ================= nav: scroll progress + current section ================= */
+const navLinks=[...document.querySelectorAll('.links a')];
+const navSecs=navLinks.map(a=>document.querySelector(a.getAttribute('href')));
+function onScroll(){const d=document.documentElement,max=d.scrollHeight-innerHeight;
+  $('progress').style.width=(max>0?scrollY/max*100:0)+'%';
+  const y=scrollY+innerHeight*.35;let k=-1;navSecs.forEach((sec,i)=>{if(sec.offsetTop<=y)k=i;});
+  navLinks.forEach((a,i)=>a.setAttribute('aria-current',i===k));
+  const on=navLinks[k];if(on&&on.dataset.on!=='1'){navLinks.forEach(a=>a.dataset.on='');on.dataset.on='1';
+    const L=on.parentElement;L.scrollLeft=on.offsetLeft-L.offsetLeft-L.clientWidth/2+on.clientWidth/2;}}
+addEventListener('scroll',onScroll,{passive:true});
+addEventListener('keydown',e=>{if($('lb').hidden)return;
+  if(e.key==='Escape')closeLb();else if(e.key==='ArrowRight')lbStep(1);else if(e.key==='ArrowLeft')lbStep(-1);});
 
 /* ================= lightbox ================= */
 let lbCard=null,lbIdx=0;
@@ -851,12 +787,15 @@ function drawMahalle(MH){const {x:c,w,h}=MH;c.clearRect(0,0,w,h);c.fillStyle=C.n
 setInterval(()=>{const hs=pick(houses);if(hs.l<8&&Math.random()<.5){hs.l++;lastUp={i:houses.indexOf(hs),t:60};}
   if(houses.every(x=>x.l>=7))houses.forEach(x=>x.l=1+Math.floor(Math.random()*3));},2600);
 
-/* ================= render: only the visible slide's canvases ================= */
+/* ================= render ================= */
 const VIEWS=[['halayCover',(t,T)=>drawHalay(t,T)],['halayDemo',(t,T)=>drawHalay(t,T)],['map',(t,T)=>drawMap(T)],['race',(t,T)=>drawRace(T)],['mahalle',(t,T)=>drawMahalle(T)]]
   .map(([id,fn])=>({cv:$(id),fn,T:null}));
-function refit(){for(const v of VIEWS){v.T=v.cv.closest('.slide').classList.contains('on')?fit(v.cv):null;}}
+function refit(){const t=performance.now();for(const v of VIEWS){v.T=fit(v.cv);if(v.T.w>1)v.fn(t,v.T);}}
 addEventListener('resize',refit);
-function loop(t){stepHalay();for(const v of VIEWS)if(v.T&&v.T.w>1)v.fn(t,v.T);requestAnimationFrame(loop);}
+/* draw every canvas once, then animate only the ones on screen */
+const io=new IntersectionObserver(es=>es.forEach(e=>{const v=VIEWS.find(v=>v.cv===e.target);if(v)v.vis=e.isIntersecting;}));
+VIEWS.forEach(v=>{v.vis=true;io.observe(v.cv);});
+function loop(t){stepHalay();for(const v of VIEWS)if(v.vis&&v.T&&v.T.w>1)v.fn(t,v.T);requestAnimationFrame(loop);}
 say('ayse_34','HORON');say('trabzonlu61','kemençe bende!');say('mert.k','HORON');update();
 
 /* ================= calculator ================= */
@@ -874,7 +813,7 @@ function setModel(m){model=m;$('mSub').setAttribute('aria-pressed',m==='sub');$(
 $('mSub').onclick=()=>setModel('sub');$('mOne').onclick=()=>setModel('one');
 calc();
 
-fromHash();
+refit();onScroll();
 document.fonts&&document.fonts.ready.then(refit);
 requestAnimationFrame(loop);
 })();
